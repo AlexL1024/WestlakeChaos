@@ -219,6 +219,35 @@
     text-shadow:0 0 24px rgba(0,0,0,.95), 0 4px 18px rgba(0,0,0,.95); }
   #sleepCue span { display:block; margin-top:6px; font-size:15px; font-weight:800; letter-spacing:1.6px;
     color:#fff; text-shadow:0 2px 12px rgba(0,0,0,.95); }
+  .rBtns { display:flex; gap:10px; align-items:center; flex-wrap:wrap; }
+  button.ghost { background:transparent; color:#9fd8b6; border:1px solid rgba(47,174,99,.5); }
+  button.ghost:hover { background:rgba(47,174,99,.14); color:#eaf7ef; }
+  #lbCard { width:min(560px,94vw); }
+  #lbCard h1 { font-size:32px; margin-bottom:12px; }
+  .lbYou { font-size:14px; color:#a9c6b6; margin-bottom:10px; }
+  .lbYou b { color:#3ddc84; font-size:19px; }
+  .lbEntry { display:flex; gap:8px; }
+  #lbName { flex:1; min-width:0; font:inherit; font-size:17px; font-weight:700; letter-spacing:.5px;
+    padding:11px 13px; border-radius:11px; color:#eaf7ef; background:rgba(255,255,255,.06);
+    border:1px solid rgba(47,174,99,.45); outline:none; pointer-events:auto; }
+  #lbName:focus { border-color:#3ddc84; background:rgba(47,174,99,.12); }
+  #lbName::placeholder { color:#6d8b7b; font-weight:600; }
+  .lbMsg { min-height:17px; margin-top:7px; font-size:12.5px; font-weight:700; letter-spacing:.4px; color:#a9c6b6; }
+  .lbMsg.bad { color:#ff6a5a; }
+  .lbMsg.good { color:#3ddc84; }
+  #lbList { margin:14px 0 16px; max-height:46vh; overflow:auto; border-radius:12px;
+    background:rgba(0,0,0,.28); padding:6px 4px; }
+  .lbRow { display:flex; align-items:center; gap:10px; padding:6px 10px; font-size:14px; border-radius:8px; }
+  .lbRow u { flex:0 0 30px; text-align:right; font-style:normal; text-decoration:none;
+    color:#6d8b7b; font-weight:800; font-size:12px; }
+  .lbRow u.g { color:#ffd23f; } .lbRow u.s { color:#d8e2e6; } .lbRow u.b { color:#d09257; }
+  .lbRow i { flex:1; font-style:normal; color:#eaf7ef; font-weight:700; overflow:hidden;
+    text-overflow:ellipsis; white-space:nowrap; }
+  .lbRow em { font-style:normal; font-size:10.5px; letter-spacing:1.2px; color:#7f9c8b; text-transform:uppercase; }
+  .lbRow b { flex:0 0 62px; text-align:right; color:#3ddc84; font-weight:800; }
+  .lbRow.me { background:rgba(47,174,99,.20); outline:1px solid rgba(47,174,99,.5); }
+  .lbNote { padding:22px 14px; text-align:center; font-size:13.5px; color:#9fb8a8; line-height:1.6; }
+  .lbNote small { color:#6d8b7b; }
   #cookedOver { position:fixed; inset:0; z-index:42; display:flex; align-items:center;
     justify-content:center; pointer-events:none; background:rgba(0,0,0,.28); }
   #cookedOver span { font-size:clamp(56px,15vw,190px); font-weight:900; letter-spacing:14px;
@@ -355,7 +384,10 @@
       <div class="bk"><b>CTRL</b><span>BRACE</span></div>
       <div class="bk"><b>F</b><span>COOK &mdash; once per game</span></div>
     </div>
-    <button id="startBtn">FIRST BELL</button>
+    <div class="rBtns">
+      <button id="startBtn">FIRST BELL</button>
+      <button id="startBoardBtn" class="ghost">LEADERBOARD</button>
+    </div>
   </div>
 </div>
 
@@ -367,7 +399,27 @@
       <div class="auraTop"><span>AURA</span><b id="rAura">0</b></div>
       <div id="auraList"></div>
     </div>
-    <button id="againBtn">RUN IT BACK</button>
+    <div class="rBtns">
+      <button id="boardBtn" class="ghost">LEADERBOARD</button>
+      <button id="againBtn">RUN IT BACK</button>
+    </div>
+  </div>
+</div>
+
+<div id="lbOver" class="over hidden">
+  <div class="card" id="lbCard">
+    <div class="tag">westlakeboys.xyz &middot; the board</div>
+    <h1>TOP <em>AURA</em></h1>
+    <div id="lbForm" class="hidden">
+      <div class="lbYou">You scored <b id="lbMyAura">0</b> &middot; <span id="lbMyGrade">Achieved</span></div>
+      <div class="lbEntry">
+        <input id="lbName" maxlength="14" autocomplete="off" spellcheck="false" placeholder="your name">
+        <button id="lbGo">PUT ME ON IT</button>
+      </div>
+      <div id="lbMsg" class="lbMsg"></div>
+    </div>
+    <div id="lbList"></div>
+    <button id="lbBack">BACK</button>
   </div>
 </div>
 
@@ -4545,16 +4597,16 @@ function examAnswer(n){
   const right = !!Q.both || i === ci;
   S.flash = Q.why ? 2.5 : 1.7; S.flashI = i;
   S.answered++;
-  S.aura += 3; logAura('Wrote something in a box', 3);
   Audio_.pen();
   S.reveal = { chosen:i, correct: Q.both ? i : ci, right,
                why: Q.why || (right ? (Q.note||'') : ('The marked answer was ' + (ci+1) + '. ' + (Q.note||''))) };
   if (right){
-    S.right++; S.aura += 5; S.goldHits++;
-    logAura(Q.why ? ('Marked correct \u2014 ' + Q.s.toLowerCase()) : Q.note, 5);
+    S.right++; S.aura += 1; S.goldHits++;
+    logAura('Got one right in the exam', 1);
     setTimeout(()=>Audio_.point(), 90);
     banner('CORRECT.', S.reveal.why, 3200);
   } else {
+    S.aura -= 1; logAura('Got one wrong in the exam', -1);
     setTimeout(()=>Audio_.grunt(), 90);
     banner('INCORRECT.', S.reveal.why, 3200);
   }
@@ -4616,7 +4668,7 @@ function updateExam(dt){
     S.readLeft = EXAM_READ_END - S.t;
     if (press){
       S.nagT = 1.4;
-      if (S.nags < 3){ S.nags++; S.aura -= 2; logAura('Picked up your pen in reading time', -2); }
+      if (S.nags < 3){ S.nags++; S.aura -= 1; logAura('Picked up your pen in reading time', -1); }
       Audio_.whistle();
       banner(EXAM_NAG[Math.min(S.nags-1,2)] || 'PENS DOWN.',
              S.nags>=3 ? 'He has stopped writing your name down. He has memorised it.'
@@ -4628,17 +4680,23 @@ function updateExam(dt){
     }
   }
   else if (S.stage === 'writing'){
-    if (press) examAnswer(press);
+    // once it is written down it is written down — no changing your mind when
+    // the marker shows you the answer
+    if (press && S.flash <= 0 && !S.reveal) examAnswer(press);
     if (S.flash > 0){
       S.flash -= dt;
       if (S.flash <= 0){
         S.flashI = -1; S.reveal = null;
         if (S.qi < examTotal(S)-1) S.qi++;
         else {
-          S.stage = 'done'; S.aura += 15; S.blanks = 0;
+          S.stage = 'done'; S.blanks = 0;
           S.t = Math.max(S.t, EXAM_OVER - 6.5);      // no sitting there for half a minute
-          logAura('Answered every single question', 15);
-          banner('YOU FINISHED THE PAPER.', 'Nobody finishes the paper. Sit back down.', 4000);
+          if (S.right > examTotal(S)/2){
+            S.aura += 5; logAura('Finished the paper, and got most of it right', 5);
+            banner('YOU FINISHED THE PAPER.', 'Nobody finishes the paper. Sit back down.', 4000);
+          } else {
+            banner('YOU FINISHED THE PAPER.', 'You got ' + S.right + ' of them right. Sit back down.', 4000);
+          }
         }
       }
     }
@@ -4653,7 +4711,7 @@ function updateExam(dt){
   }
   else if (S.stage === 'done'){
     if (press && S.breaches < 2){
-      S.breaches++; S.aura -= 4; logAura('Still writing after pens down', -4);
+      S.breaches++; S.aura -= 2; logAura('Still writing after pens down', -2);
       Audio_.whistle();
       banner('PENS. DOWN.', 'He is walking over. He has the clipboard out.', 2600);
     }
@@ -4735,14 +4793,11 @@ function startExam(){
 function finishExam(){
   const S = ExamScene.S;
   S.blanks = EXAM_QS.length - S.answered;
-  if (S.right >= 5){ S.aura += 6; logAura('Five marked correct', 6); }
   if (S.answered === 0){
-    S.aura -= 10; logAura('Handed in a completely blank paper', -10);
-  } else if (S.answered >= 10){
-    S.aura += 8; logAura('Attempted double figures', 8);
+    S.aura -= 3; logAura('Handed in a completely blank paper', -3);
   }
   if (S.finished >= 5 && S.answered < 6)
-    logAura('Watched the room empty around you', -3), S.aura -= 3;
+    logAura('Watched the room empty around you', -1), S.aura -= 1;
   const earned = Math.round(S.aura);
   const carried = G.auraBank || 0;
   fadeTo(()=>{
@@ -6678,6 +6733,7 @@ function showResult(){
   $('rGrade').textContent = g.name;
   $('rGrade').className = 'grade ' + g.cls;
   $('resultOver').classList.remove('hidden');
+  if (lbOn()) lbFetch();            // warm it up so the board is instant when they tap it
 }
 function endGame(){
   G.phase='over';
@@ -6701,7 +6757,7 @@ addEventListener('keydown', e=>{
   if (e.code==='KeyE') eEdge = true;
   if (e.code==='KeyQ') qEdge = true;
   if (/^Key[A-Z]$/.test(e.code) || e.code==='Space') edges[e.code] = (edges[e.code]||0)+1;
-  if (/^(Digit|Numpad)[1-4]$/.test(e.code)) edges[e.code] = (edges[e.code]||0)+1;
+  if (/^(Digit|Numpad)[1-4]$/.test(e.code) && !e.repeat) edges[e.code] = (edges[e.code]||0)+1;
   if (e.code==='Space') spaceEdge++;
   if (e.code==='KeyE' && G.playerBoarded && G.started && G.mode==='bay' && G.phase!=='over'){
     G.rideSkip = true;
@@ -8110,12 +8166,146 @@ $('startBtn').onclick = ()=>{
 $('againBtn').onclick = ()=>{
   location.reload();          // a fresh page — nothing carried over from the last run
 };
+function lbMine(){
+  return { aura: auraTotal(), grade: auraGrade(auraTotal()).name };
+}
+$('boardBtn').onclick      = ()=>{ $('resultOver').classList.add('hidden'); lbOpen(lbMine()); };
+$('startBoardBtn').onclick = ()=>{ $('startOver').classList.add('hidden'); lbOpen(null); };
+$('lbGo').onclick          = ()=>{ lbSend(lbMine()); };
+$('lbName').onkeydown      = (e)=>{ e.stopPropagation(); if (e.key==='Enter') lbSend(lbMine()); };
+$('lbBack').onclick = ()=>{
+  lbClose();
+  if (G.started && G.phase==='over') $('resultOver').classList.remove('hidden');
+  else $('startOver').classList.remove('hidden');
+};
 addEventListener('resize', ()=>{
   camera.aspect=innerWidth/innerHeight; camera.updateProjectionMatrix();
   renderer.setSize(innerWidth,innerHeight);
 });
 
+
+/* ============================================================
+   15.  LEADERBOARD  (Supabase)
+   ------------------------------------------------------------
+   Paste your project URL and anon key below and it switches on.
+   Leave them blank and the game runs exactly as before, with the
+   board showing a "not connected" note instead.
+   ============================================================ */
+const LB = {
+  url : 'https://vnycdreguqczsgpaamin.supabase.co',
+  key : 'sb_publishable_TcQ1mgz8_Shq5gi3VEKarA_FJh7F0ga',
+  table : 'scores',
+  top : 25,
+  busy : false, sent : false, rows : null, err : null
+};
+function lbOn(){ return !!(LB.url && LB.key); }
+function lbHead(){ return { apikey: LB.key, Authorization: 'Bearer ' + LB.key,
+                            'Content-Type': 'application/json' }; }
+
+/* ---- names: short, printable, and nothing you would not want on a wall ---- */
+const LB_BAD = ('fuck shit cunt bitch dick cock wank piss bastard slut whore nigg fag retard rape '
+  + 'penis vagina anal porn sex tit arse ass hole bollock prick twat pussy jizz cum sperm '
+  + 'kys kill nazi hitler isis suicide').split(' ');
+function lbClean(raw){
+  let n = String(raw||'').replace(/\s+/g,' ').trim().slice(0,14);
+  n = n.replace(/[^\w \-'.]/g,'');
+  if (!n) return { ok:false, why:'Put a name in first.' };
+  if (n.length < 2) return { ok:false, why:'A bit longer than that.' };
+  // leetspeak does not get you past it either
+  const flat = n.toLowerCase()
+    .replace(/[013457@$!|]/g, c => ({'0':'o','1':'i','3':'e','4':'a','5':'s','7':'t',
+                                     '@':'a','$':'s','!':'i','|':'i'}[c]))
+    .replace(/[^a-z]/g,'');
+  for (const w of LB_BAD) if (flat.indexOf(w) >= 0)
+    return { ok:false, why:'Pick something you would put on a blazer.' };
+  return { ok:true, name:n };
+}
+function lbRemember(n){ try{ localStorage.setItem('wbhs.name', n); }catch(e){} }
+function lbRecall(){ try{ return localStorage.getItem('wbhs.name')||''; }catch(e){ return ''; } }
+
+async function lbFetch(){
+  if (!lbOn()) { LB.err = 'off'; return null; }
+  try{
+    const r = await fetch(LB.url + '/rest/v1/' + LB.table
+        + '?select=name,aura,grade&order=aura.desc&limit=' + LB.top, { headers: lbHead() });
+    if (!r.ok) throw new Error('HTTP ' + r.status);
+    LB.rows = await r.json(); LB.err = null;
+    return LB.rows;
+  } catch(e){ LB.err = e.message || 'could not reach the leaderboard'; return null; }
+}
+async function lbSubmit(name, aura, grade){
+  if (!lbOn()) return { ok:false, why:'The leaderboard is not switched on yet.' };
+  try{
+    const r = await fetch(LB.url + '/rest/v1/' + LB.table, {
+      method:'POST', headers: Object.assign(lbHead(), {Prefer:'return=minimal'}),
+      body: JSON.stringify({ name, aura, grade })
+    });
+    if (!r.ok) throw new Error('HTTP ' + r.status + ' — ' + (await r.text()).slice(0,90));
+    return { ok:true };
+  } catch(e){ return { ok:false, why: e.message }; }
+}
+
+/* ---- drawing the board ---- */
+function lbRender(mine){
+  const box = $('lbList');
+  if (!box) return;
+  if (!lbOn()){
+    box.innerHTML = '<div class="lbNote">The leaderboard is not connected yet.<br>'
+      + 'Open the file and put your Supabase URL and key at the top.</div>';
+    return;
+  }
+  if (LB.err && LB.err !== 'off'){
+    box.innerHTML = '<div class="lbNote">Could not reach the leaderboard.<br><small>'
+      + LB.err + '</small></div>'; return;
+  }
+  const rows = LB.rows;
+  if (!rows){ box.innerHTML = '<div class="lbNote">Loading…</div>'; return; }
+  if (!rows.length){ box.innerHTML = '<div class="lbNote">Nobody on the board yet. Be first.</div>'; return; }
+  let done = false;
+  box.innerHTML = rows.map((r,i)=>{
+    const me = (!done && mine && r.name === mine.name && r.aura === mine.aura) ? (done = true, ' me') : '';
+    const medal = i===0 ? 'g' : i===1 ? 's' : i===2 ? 'b' : '';
+    return '<div class="lbRow'+me+'">'
+      + '<u class="'+medal+'">' + (i+1) + '</u>'
+      + '<i>' + String(r.name).replace(/[<>&]/g,'') + '</i>'
+      + '<em>' + (r.grade||'') + '</em>'
+      + '<b>' + r.aura + '</b></div>';
+  }).join('');
+}
+async function lbOpen(mine){
+  $('lbOver').classList.remove('hidden');
+  $('lbForm').classList.toggle('hidden', !mine || LB.sent || !lbOn());
+  if (mine){
+    $('lbMyAura').textContent = mine.aura;
+    $('lbMyGrade').textContent = mine.grade;
+    const inp = $('lbName');
+    if (!inp.value) inp.value = lbRecall();
+  }
+  LB.rows = null; lbRender(mine);
+  await lbFetch();
+  lbRender(mine);
+}
+function lbClose(){ $('lbOver').classList.add('hidden'); }
+async function lbSend(mine){
+  if (LB.busy || LB.sent) return;
+  const c = lbClean($('lbName').value);
+  const msg = $('lbMsg');
+  if (!c.ok){ msg.textContent = c.why; msg.className = 'lbMsg bad'; return; }
+  LB.busy = true; msg.textContent = 'Sending…'; msg.className = 'lbMsg';
+  $('lbGo').disabled = true;
+  const res = await lbSubmit(c.name, mine.aura, mine.grade);
+  LB.busy = false; $('lbGo').disabled = false;
+  if (!res.ok){ msg.textContent = res.why; msg.className = 'lbMsg bad'; return; }
+  LB.sent = true; lbRemember(c.name);
+  msg.textContent = 'You are on the board.'; msg.className = 'lbMsg good';
+  $('lbForm').classList.add('hidden');
+  await lbFetch();
+  lbRender({ name:c.name, aura:mine.aura, grade:mine.grade });
+}
+
 window.__BBB = { G, camera, buses, agents, scene, renderer, Audio_,
+  LB, lbOn, lbClean, lbFetch, lbSubmit, lbOpen, lbClose, lbSend, lbRender, lbMine(){ return lbMine(); },
+  showResult(){ showResult(); },
   get player(){ return player; },
   jumpToBay(){ G.busX = G.targetBay; G.busV = 0; G.phase='arrive'; for(const a of agents) a.committed=true; },
   look(y,p){ yaw=y; pitch=p; },
