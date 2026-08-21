@@ -2946,7 +2946,7 @@ const Hall = (function(){
       list[rint(0,3)] = who;
     })();
     S.openI   = 0; S.said2 = false; S.said3 = false;
-    S.vape = Math.random() < 0.2;           // one assembly in five
+    S.vape = Math.random() < 0.5;           // one assembly in five
     S.vapeStep = 0; S.vaper = null;
     S.cap=''; S.capWho='';
     deputy.position.set(STAGE_STAFF_X0 + STAGE_SEAT_P, HALL.STAGE_Y, HALL.ZF-2.6); deputy.rotation.y=0;
@@ -7708,7 +7708,7 @@ function updateHUD(){
 /* ============================================================
    12b.  THE FINALE  —  an extraordinary day gets called to the front
    ============================================================ */
-const FIN_GOOD = 150, FIN_BAD = -100;
+const FIN_GOOD = 150, FIN_BAD =   0;
 const FIN = {
   kind:'good', total:0, t:0, step:-1, active:false,
   px:0, pz:HALL.ZF-1.6, vx:0, vz:0,
