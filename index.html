@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Westlake Boys High School</title>
+<title>westlakeboys.xyz</title>
 <style>
   * { margin:0; padding:0; box-sizing:border-box; }
   html,body { width:100%; height:100%; overflow:hidden; background:#0a0f18;
@@ -65,6 +65,7 @@
     border:1px solid rgba(46,160,90,.42); border-radius:18px; padding:22px 26px;
     box-shadow:0 30px 90px rgba(0,0,0,.65), inset 0 1px 0 rgba(255,255,255,.05); }
   h1 { font-size:38px; font-weight:900; letter-spacing:-1px; line-height:1; color:#ffffff; }
+  #gameTitle { font-size:clamp(34px,7.2vw,58px); letter-spacing:-2px; text-transform:none; }
   h1 em { font-style:normal; color:#2fae63; }
   .tag { color:#9fd8b6; font-size:13px; letter-spacing:3.4px; text-transform:uppercase; margin-bottom:8px; }
   .blurb { color:#e6f2ea; font-size:14px; line-height:1.55; margin:11px 0 14px; }
@@ -100,6 +101,7 @@
   #hallHud { position:fixed; top:14px; left:14px; z-index:12; min-width:210px; }
   #hallCapWrap { position:fixed; left:50%; bottom:96px; transform:translateX(-50%); z-index:12;
     width:min(760px,88vw); text-align:center; pointer-events:none; }
+  #hallCapWrap.hi { bottom:auto; top:92px; }
   #hallWho { font-size:11px; letter-spacing:3.4px; color:#ffd23f; text-transform:uppercase; margin-bottom:5px;
     text-shadow:0 2px 8px #000; }
   #hallCap { font-size:24px; font-weight:700; color:#fff; line-height:1.35;
@@ -187,6 +189,14 @@
   #keyCue .kcTitle { text-align:center; font-size:22px; font-weight:900; letter-spacing:8px;
     color:#ff3b2f; text-shadow:0 0 18px rgba(255,59,47,.65), 0 2px 12px rgba(0,0,0,.95); }
   #keyCue.low { bottom:7.5%; }        /* clear of the stamina bar */
+  /* the exam paper needs the middle of the screen, so the keys go down the side */
+  #keyCue.side { left:16px; bottom:16px; transform:none; width:auto !important;
+                 min-width:0; gap:6px; }
+  #keyCue.side .kcRow { gap:8px; }
+  #keyCue.side .kcTitle { font-size:12px; letter-spacing:4px; text-align:left; }
+  #keyCue.side .kc { width:58px; padding:6px 4px 5px; }
+  #keyCue.side .kc b { font-size:22px; }
+  #keyCue.side .kc span { font-size:9px; letter-spacing:1px; }
   #keyCue.low .kc { padding:9px 6px 8px; }
   #keyCue.low .kc b { font-size:27px; }
   #keyCue.low .kc span { font-size:11px; letter-spacing:2px; }
@@ -209,6 +219,25 @@
     text-shadow:0 0 24px rgba(0,0,0,.95), 0 4px 18px rgba(0,0,0,.95); }
   #sleepCue span { display:block; margin-top:6px; font-size:15px; font-weight:800; letter-spacing:1.6px;
     color:#fff; text-shadow:0 2px 12px rgba(0,0,0,.95); }
+  #cookedOver { position:fixed; inset:0; z-index:42; display:flex; align-items:center;
+    justify-content:center; pointer-events:none; background:rgba(0,0,0,.28); }
+  #cookedOver span { font-size:clamp(56px,15vw,190px); font-weight:900; letter-spacing:14px;
+    color:#e2231a; text-shadow:0 0 40px rgba(226,35,26,.55), 0 6px 26px rgba(0,0,0,.9);
+    animation:cookedIn .5s ease-out; }
+  @keyframes cookedIn { from { transform:scale(2.2); opacity:0 } to { transform:scale(1); opacity:1 } }
+  #tieOver { position:fixed; left:50%; top:27%; transform:translateX(-50%); z-index:42;
+    text-align:center; pointer-events:none; }
+  #tieOver b { display:block; font-size:clamp(30px,6vw,62px); font-weight:900; letter-spacing:6px;
+    color:#ffd23f; text-shadow:0 0 34px rgba(255,210,63,.6), 0 4px 20px rgba(0,0,0,.9); }
+  #tieOver span { display:block; margin-top:8px; font-size:14px; letter-spacing:3px; font-weight:700;
+    color:#eaf3ec; text-shadow:0 2px 10px #000; }
+  #mobileOver { z-index:60; background:radial-gradient(ellipse at 50% 34%, #0d2b1c, #040a07 70%); }
+  #mobileOver .card { max-width:min(560px,92vw); background:rgba(6,16,10,.98); }
+  #mobileOver h1 { font-size:clamp(30px,9vw,52px); margin-bottom:14px; }
+  #mobText { font-size:clamp(15px,4.2vw,19px); line-height:1.55; color:#dfe9e2; }
+  #mobText b { color:#2fae63; font-weight:900; letter-spacing:1px; }
+  #mobFoot { margin-top:18px; font-size:clamp(12px,3.4vw,15px); font-weight:700;
+             letter-spacing:1px; color:#e2504f; }
   #ridePrompt { position:fixed; left:50%; bottom:12%; transform:translateX(-50%); z-index:14;
     text-align:center; pointer-events:none;
     background:rgba(8,14,26,.66); border:1px solid rgba(255,210,63,.45); border-radius:18px;
@@ -318,8 +347,8 @@
 
 <div id="startOver" class="over hidden">
   <div class="card">
-    <h1>WESTLAKE BOYS <em>HIGH SCHOOL</em></h1>
-    <div class="tag" style="margin:6px 0 0">Monday &middot; period one</div>
+    <h1 id="gameTitle">westlakeboys<em>.xyz</em></h1>
+    <div class="tag" style="margin:8px 0 0">Westlake Boys High School &middot; Monday, period one</div>
     <div id="bigKeys">
       <div class="bk"><b>W A S D</b><span>MOVE</span></div>
       <div class="bk"><b>SPACE</b><span>SHOVE</span></div>
@@ -339,6 +368,19 @@
       <div id="auraList"></div>
     </div>
     <button id="againBtn">RUN IT BACK</button>
+  </div>
+</div>
+
+<div id="cookedOver" class="hidden"><span>COOKED</span></div>
+<div id="tieOver" class="hidden"><b>SCHOLARSHIP TIE</b><span>awarded in front of the whole school</span></div>
+<div id="mobileOver" class="over hidden">
+  <div class="card" style="text-align:center">
+    <h1>NOT ON <em>MOBILE</em></h1>
+    <div id="mobText">
+      This one needs a keyboard and a mouse. You move with <b>W A S D</b>, look with the
+      mouse, and shove with <b>SPACE</b> — none of which a touchscreen has.
+    </div>
+    <div id="mobFoot">Open it on a laptop or a desktop and it will run fine.</div>
   </div>
 </div>
 
@@ -471,6 +513,8 @@ const BUS_HL   = 6.20;          // bus half length
 const DOOR_LX  = 1.50;          // door centre in bus-local X
 const DOOR_HW  = 0.72;          // door half width
 const DOOR_BACK = 0.75;         // the bulkhead behind the doors — you stop here, you do not walk in
+const BUS_CAP_SINGLE = 20;      // 10 seats + 10 standing
+const BUS_CAP_DOUBLE = 30;      // 22 seats (2 top-front, 10 up, 10 down) + 8 standing
 const BAYS     = [-11.0, 0.0, 11.0];     // the three possible parking spots
 const X_MIN=-27, X_MAX=27;
 
@@ -1135,14 +1179,22 @@ function makeBus(){
                    pose:{ x:s.x, y:s.y + 1.22, z:s.z } };
     group.add(m); occupants.push(m);
   }
-  // standing room — shoulder to shoulder down the aisle, then the doorway well
-  const RIDE_X = 1.62, RIDE_Z = -0.02;          // where the player ends up standing
+  // Standing room.  All 20 seats are down the back, so the whole front of the bus is the
+  // standing bay — and that is where a full bus actually packs.  Fill outwards from just
+  // inside the doors so the crush forms around you, then run back down the aisle.
+  const RIDE_X = 1.94, RIDE_Z = -0.02;          // where the player ends up standing
+  const DOOR_IN = [1.50, -0.55];                // just inside the door well
   const stand = [];
-  let flip = 0;
-  for (let x=-5.75; x<=3.45; x+=0.45) stand.push([x, (flip++%2) ? 0.16 : -0.16]);
-  stand.push([1.45,-0.60],[2.05,-0.62],[0.85,-0.58],[2.60,-0.55],[3.30,0.14],[3.95,-0.22],[4.35,0.10]);
+  // two ranks either side of the aisle: packed shoulders, but you can still see down the bus
+  for (const x of [3.04,2.49,1.94,1.39,0.84,0.29,-0.26])
+    for (const z of [-0.70,0.66]) stand.push([x,z]);
+  stand.push([0.29,-0.02],[-0.26,-0.02]);        // a couple down the middle, well clear of you
+  stand.sort((a,b)=> Math.hypot(a[0]-DOOR_IN[0],a[1]-DOOR_IN[1])
+                   - Math.hypot(b[0]-DOOR_IN[0],b[1]-DOOR_IN[1]));
+  let flip = 0;                                  // the rest trail off down the aisle
+  for (let x=-0.94; x>=-5.80; x-=0.46) stand.push([x, (flip++%2) ? 0.10 : -0.10]);
   for (const s of stand){
-    if (Math.hypot(s[0]-RIDE_X, s[1]-RIDE_Z) < 0.78) continue;   // leave yourself somewhere to stand
+    if (Math.hypot(s[0]-RIDE_X, s[1]-RIDE_Z) < 1.05) continue;   // leave yourself somewhere to stand
     const m=new THREE.Mesh(buildStanding(), studentMat);
     m.position.set(s[0], 1.07, s[1]);
     m.rotation.y = Math.PI/2 + (Math.random()<0.22 ? rand(-2.4,2.4) : rand(-0.55,0.55));
@@ -1170,7 +1222,7 @@ function makeBus(){
     },
     capacity: occupants.length,
     isDouble: false, seatCount: 20, baseLoad: BASE_LOAD,
-    ridePos: { x: 1.62, y: 1.02 + 1.52, z: -0.02 },
+    ridePos: { x: RIDE_X, y: 1.02 + 1.52, z: RIDE_Z },
     frontSeats: [],
     fill(n){ for (let i=0;i<this.occupants.length;i++){
       const o=this.occupants[i]; o.visible = (i<n) && !o.userData.taken; } },
@@ -1467,12 +1519,19 @@ function makeBusDouble(){
   const BASE_LOAD = preTaken.length * 2;
   const frontSeats = [];
   for (const s of seatOrder) occupants.push(seat(s));
-  const RIDE_X=1.62, RIDE_Z=-0.02;
-  const stand=[]; let flip=0;
-  for (let x=-5.9; x<=3.3; x+=0.48) stand.push([x,(flip++%2)?0.16:-0.16]);
-  stand.push([1.45,-0.60],[2.05,-0.62],[0.85,-0.58],[2.65,-0.55],[3.35,0.12]);
+  const RIDE_X=1.94, RIDE_Z=-0.02;
+  const DOOR_IN=[1.50,-0.55];
+  const stand=[];
+  // two ranks either side of the aisle: packed shoulders, but you can still see down the bus
+  for (const x of [3.04,2.49,1.94,1.39,0.84,0.29,-0.26])
+    for (const z of [-0.70,0.66]) stand.push([x,z]);
+  stand.push([0.29,-0.02],[-0.26,-0.02]);        // a couple down the middle, well clear of you
+  stand.sort((a,b)=> Math.hypot(a[0]-DOOR_IN[0],a[1]-DOOR_IN[1])
+                   - Math.hypot(b[0]-DOOR_IN[0],b[1]-DOOR_IN[1]));
+  let flip=0;
+  for (let x=-0.94; x>=-5.90; x-=0.46) stand.push([x,(flip++%2)?0.10:-0.10]);
   for (const s of stand){
-    if (Math.hypot(s[0]-RIDE_X, s[1]-RIDE_Z) < 0.78) continue;
+    if (Math.hypot(s[0]-RIDE_X, s[1]-RIDE_Z) < 1.05) continue;
     const m=new THREE.Mesh(buildStanding(), studentMat);
     m.position.set(s[0], LF+0.05, s[1]);
     m.rotation.y = Math.PI/2 + (Math.random()<0.22? rand(-2.4,2.4) : rand(-0.55,0.55));
@@ -2052,37 +2111,116 @@ function mottoTexture(){
   spaced('BE THY TEST', 1450, 68, 24);
   return new THREE.CanvasTexture(c);
 }
+/* ---- the school crest, drawn once and reused everywhere ----
+   Red shield, white swan, ribbon under it. Matches the one on the hall screen. */
+function drawCrest(g, cx, cy, h, opts){
+  const o = opts||{};
+  const s = h/120;
+  g.save(); g.translate(cx, cy); g.scale(s, s);
+  const RED = o.flat ? '#d4232e' : '#d4232e', EDGE = '#f6f3ec';
+  // shield
+  g.beginPath();
+  g.moveTo(-42, -58); g.lineTo(-14,-58); g.lineTo(-14,-50); g.lineTo(14,-50); g.lineTo(14,-58);
+  g.lineTo(42,-58); g.lineTo(42, 6);
+  g.quadraticCurveTo(42, 40, 0, 60);
+  g.quadraticCurveTo(-42, 40, -42, 6);
+  g.closePath();
+  g.fillStyle = RED; g.fill();
+  g.lineWidth = 4; g.strokeStyle = EDGE; g.stroke();
+  // a small coronet at the head of the shield
+  g.fillStyle = EDGE;
+  g.beginPath(); g.moveTo(-13,-46); g.lineTo(13,-46); g.lineTo(11,-32); g.lineTo(-11,-32); g.closePath(); g.fill();
+  for (const [tx,ty] of [[-9,-55],[0,-58],[9,-55]]){
+    g.beginPath(); g.moveTo(tx-4,-46); g.lineTo(tx,ty+3); g.lineTo(tx+4,-46); g.closePath(); g.fill();
+    g.beginPath(); g.ellipse(tx, ty, 2.6, 2.6, 0, 0, 6.2832); g.fill();
+  }
+  // the swan
+  g.fillStyle = EDGE; g.strokeStyle = EDGE; g.lineCap='round'; g.lineJoin='round';
+  g.beginPath(); g.ellipse(4, 16, 25, 14, -0.10, 0, 6.2832); g.fill();      // body
+  g.beginPath(); g.moveTo(-16, 22); g.quadraticCurveTo(-34, 18, -30, 6); g.lineTo(-18, 12); g.closePath(); g.fill();
+  g.lineWidth = 7;                                                          // neck
+  g.beginPath(); g.moveTo(12, 8); g.bezierCurveTo(24,-8, 8,-22, -4,-16); g.stroke();
+  g.beginPath(); g.ellipse(-6, -17, 7, 6, -0.3, 0, 6.2832); g.fill();       // head
+  g.beginPath(); g.moveTo(-12,-16); g.lineTo(-22,-12); g.lineTo(-11,-10); g.closePath(); g.fill();  // beak
+  g.fillStyle = RED; g.beginPath(); g.ellipse(-6,-19, 1.8, 1.8, 0,0,6.2832); g.fill();
+  g.strokeStyle = RED; g.lineWidth = 1.6;                                   // wing line
+  g.beginPath(); g.moveTo(-6, 12); g.quadraticCurveTo(6, 4, 22, 14); g.stroke();
+  // the ribbon
+  g.fillStyle = EDGE;
+  g.beginPath(); g.moveTo(-50, 44); g.lineTo(-34, 40); g.lineTo(-34, 54); g.lineTo(-50, 58); g.closePath(); g.fill();
+  g.beginPath(); g.moveTo( 50, 44); g.lineTo( 34, 40); g.lineTo( 34, 54); g.lineTo( 50, 58); g.closePath(); g.fill();
+  g.beginPath(); g.moveTo(-36, 41); g.lineTo(36, 41); g.lineTo(36, 57); g.lineTo(-36, 57); g.closePath(); g.fill();
+  g.strokeStyle = 'rgba(125,27,34,.35)'; g.lineWidth = 0.8; g.stroke();
+  g.fillStyle = '#8d1f26'; g.textAlign='center'; g.textBaseline='middle';
+  g.font = '700 5px Georgia, serif';
+  g.fillText('LET COURAGE BE THY TEST', 0, 49.4);
+  g.textBaseline='alphabetic';
+  g.restore();
+}
+/* letter-spaced serif caps, the way a school slide sets them */
+function spacedCaps(g, txt, cx, y, px, track, colour, weight){
+  g.font = (weight||'400') + ' ' + px + 'px Georgia, "Times New Roman", serif';
+  g.fillStyle = colour;
+  g.textAlign = 'left';
+  const chars = txt.split('');
+  let w = 0;
+  for (const ch of chars) w += g.measureText(ch).width + track;
+  w -= track;
+  let x = cx - w/2;
+  for (const ch of chars){ g.fillText(ch, x, y); x += g.measureText(ch).width + track; }
+  g.textAlign = 'center';
+  return w;
+}
+
 function crestTexture(scale){
-  const c=document.createElement('canvas'); c.width=128; c.height=160;
+  const c=document.createElement('canvas'); c.width=192; c.height=240;
   const g=c.getContext('2d');
-  g.clearRect(0,0,128,160);
-  g.fillStyle='#16305e';
-  g.beginPath(); g.moveTo(14,14); g.lineTo(114,14); g.lineTo(114,96);
-  g.quadraticCurveTo(64,150,14,96); g.closePath(); g.fill();
-  g.strokeStyle='#e8e4d8'; g.lineWidth=4; g.stroke();
-  g.fillStyle='#f4f2ea';
-  g.beginPath(); g.ellipse(64,62,26,17,0,0,6.3); g.fill();            // swan-ish blob
-  g.beginPath(); g.moveTo(78,50); g.quadraticCurveTo(96,34,88,60); g.closePath(); g.fill();
-  g.fillStyle='#16305e'; g.beginPath(); g.ellipse(86,46,3,3,0,0,6.3); g.fill();
+  g.clearRect(0,0,192,240);
+  drawCrest(g, 96, 108, 190);
   return new THREE.CanvasTexture(c);
 }
+/* Initials and a surname, the way they are cut into a real honours board. */
+function honoursName(){
+  const parts = ROLL[rint(0,ROLL.length-1)].n.split(' ');
+  const sur = parts[parts.length-1].toUpperCase().replace(/[^A-Z'\-]/g,'');
+  let ini = parts.slice(0, parts.length-1).map(w=>w[0].toUpperCase()+'.').join('');
+  if (!ini) ini = String.fromCharCode(65+rint(0,25)) + '.';
+  if (Math.random() < 0.30) ini += String.fromCharCode(65+rint(0,25)) + '.';
+  return ini + ' ' + sur;
+}
 function honoursTexture(title, n){
-  const c=document.createElement('canvas'); c.width=256; c.height=1024;
+  const c=document.createElement('canvas'); c.width=320; c.height=1100;
   const g=c.getContext('2d');
-  g.fillStyle='#c98a4a'; g.fillRect(0,0,256,1024);
-  g.fillStyle='#b87c3e'; g.fillRect(0,0,256,6);
-  // crest at the top
-  g.fillStyle='#f0ece0'; g.beginPath(); g.moveTo(100,26); g.lineTo(156,26); g.lineTo(156,74);
-  g.quadraticCurveTo(128,104,100,74); g.closePath(); g.fill();
-  g.fillStyle='#3a2a16'; g.font='bold 15px Georgia,serif'; g.textAlign='center';
-  g.fillText(title, 128, 132);
-  g.font='11px Georgia,serif';
-  for (let i=0;i<n;i++){
-    const y = 164 + i*17;
-    if (y>1000) break;
-    g.fillStyle='#4a3a22'; g.textAlign='left';  g.fillText(String(1965+i), 46, y);
-    g.textAlign='right'; g.fillText(['J. Anderson','P. Nguyen','T. Liang','S. Kaur','M. Fifita','D. O\'Brien','R. Patel','A. Cameron','H. Tanaka','L. Moala'][i%10], 214, y);
+  // the timber
+  g.fillStyle='#a8763d'; g.fillRect(0,0,320,1100);
+  for (let i=0;i<190;i++){
+    g.globalAlpha = 0.05 + Math.random()*0.10;
+    g.fillStyle = Math.random()<0.5 ? '#8d5f2c' : '#c08e52';
+    g.fillRect(Math.random()*320, 0, 1 + Math.random()*3, 1100);
   }
+  g.globalAlpha = 1;
+  g.fillStyle='#6f4a20'; g.fillRect(0,0,320,7); g.fillRect(0,1093,320,7);
+  g.fillRect(0,0,6,1100); g.fillRect(314,0,6,1100);
+  // crest and title, in gilt
+  drawCrest(g, 160, 92, 118);
+  spacedCaps(g, title, 160, 196, title.length > 17 ? 15 : 19, 2.2, '#f3e6cb', '700');
+  g.strokeStyle='#e2cfa6'; g.lineWidth=2;
+  g.beginPath(); g.moveTo(46,214); g.lineTo(274,214); g.stroke();
+  // the roll itself — nobody's name goes on the same board twice
+  const first = 2025 - (n-1), used = {};
+  for (let i=0;i<n;i++){
+    const y = 244 + i*18;
+    if (y > 1078) break;
+    g.fillStyle='#efe0c2';
+    g.font='500 12px Georgia, serif'; g.textAlign='left';
+    g.fillText(String(first+i), 34, y);
+    g.font='500 12.5px Georgia, serif'; g.textAlign='right';
+    let nm = honoursName(), guard = 0;
+    while (used[nm] && guard++ < 40) nm = honoursName();
+    used[nm] = 1;
+    g.fillText(nm, 288, y);
+  }
+  g.textAlign='left';
   return new THREE.CanvasTexture(c);
 }
 
@@ -2543,18 +2681,21 @@ const Hall = (function(){
     const cr = new THREE.Mesh(new THREE.PlaneGeometry(0.58,0.72),
       new THREE.MeshBasicMaterial({map:crestTexture(), transparent:true}));
     cr.position.set(0, HALL.H-1.30, HALL.ZF+0.20); group.add(cr);
-    // honours boards down the side walls
-    const titles=['HEAD BOY','DEPUTY HEAD BOY','SPORTSMAN OF THE YEAR','SPORTS CAPTAIN',
-                  'ACADEMIC CAPTAIN','MUSIC / CULTURAL CAPTAIN','LONG SERVING STAFF'];
-    titles.forEach((t,i)=>{
-      const tex = honoursTexture(t, 46);
-      const m = new THREE.Mesh(new THREE.PlaneGeometry(1.05,4.2),
-        new THREE.MeshLambertMaterial({map:tex, side:THREE.DoubleSide}));
-      const sx = i%2 ? 1 : -1;
-      m.position.set(sx*(HALL.W-0.30), 4.5, HALL.ZF + 10.5 + Math.floor(i/2)*3.4);
-      m.rotation.y = sx>0 ? -Math.PI/2 : Math.PI/2;
-      group.add(m);
-    });
+    // honours boards down BOTH side walls, starting up by the stage
+    const titles=[
+      ['HEAD BOY','DUX','SPORTSMAN OF THE YEAR','ACADEMIC CAPTAIN','HOUSE CAPTAINS'],
+      ['DEPUTY HEAD BOY','PROXIME ACCESSIT','SPORTS CAPTAIN','MUSIC / CULTURAL CAPTAIN','LONG SERVING STAFF']
+    ];
+    for (let side=0; side<2; side++){
+      const sx = side ? 1 : -1;
+      titles[side].forEach((t,i)=>{
+        const m = new THREE.Mesh(new THREE.PlaneGeometry(1.10,3.60),
+          new THREE.MeshLambertMaterial({map:honoursTexture(t, 46), side:THREE.DoubleSide}));
+        m.position.set(sx*(HALL.W-0.32), 3.75, HALL.ZF + 2.1 + i*3.35);
+        m.rotation.y = sx>0 ? -Math.PI/2 : Math.PI/2;
+        group.add(m);
+      });
+    }
     // a couple of the abstract paintings
     for (const sx of [-1,1]){
       const c=document.createElement('canvas'); c.width=192; c.height=144;
@@ -2565,7 +2706,7 @@ const Hall = (function(){
         g.fillRect(-rand(10,60),-rand(4,20),rand(20,120),rand(8,40)); g.restore(); }
       const m=new THREE.Mesh(new THREE.PlaneGeometry(2.0,1.5),
         new THREE.MeshLambertMaterial({map:new THREE.CanvasTexture(c), side:THREE.DoubleSide}));
-      m.position.set(sx*(HALL.W-0.30), 4.2, HALL.ZF+5.4);
+      m.position.set(sx*(HALL.W-0.30), 4.2, HALL.ZF+19.4);
       m.rotation.y = sx>0 ? -Math.PI/2 : Math.PI/2;
       group.add(m);
     }
@@ -2645,20 +2786,22 @@ const Hall = (function(){
     curtainL = new THREE.Mesh(buildCurtainHalf(-1), VMAT());
     curtainR = new THREE.Mesh(buildCurtainHalf( 1), VMAT());
     for (const c of [curtainL,curtainR]){ c.position.set(0, HALL.STAGE_Y+2.5, HALL.ZF-1.15); group.add(c); }
-    // projected slide on the back screen
+    // the slide that is actually up there: crest, ASSEMBLY, today's date
     (function(){
-      const c=document.createElement('canvas'); c.width=768; c.height=432;
+      const c=document.createElement('canvas'); c.width=1024; c.height=576;
       const g=c.getContext('2d');
-      const gr=g.createLinearGradient(0,0,0,432); gr.addColorStop(0,'#123a7a'); gr.addColorStop(1,'#0a1c3e');
-      g.fillStyle=gr; g.fillRect(0,0,768,432);
-      g.fillStyle='#f2efe6';
-      g.beginPath(); g.moveTo(324,86); g.lineTo(444,86); g.lineTo(444,214);
-      g.quadraticCurveTo(384,282,324,214); g.closePath(); g.fill();
-      g.fillStyle='#16305e'; g.beginPath(); g.ellipse(384,158,34,22,0,0,6.3); g.fill();
-      g.fillStyle='#f2efe6'; g.font='600 40px Georgia,serif'; g.textAlign='center';
-      g.fillText('WESTLAKE BOYS HIGH SCHOOL', 384, 330);
-      g.font='22px Georgia,serif'; g.fillStyle='#c8d6ee';
-      g.fillText('Whole School Assembly', 384, 372);
+      const gr=g.createLinearGradient(0,0,0,576);
+      gr.addColorStop(0,'#a9d4c3'); gr.addColorStop(0.55,'#9ccdba'); gr.addColorStop(1,'#8dc2ae');
+      g.fillStyle=gr; g.fillRect(0,0,1024,576);
+      drawCrest(g, 512, 176, 232);
+      g.strokeStyle='rgba(255,255,255,.85)'; g.lineWidth=2;
+      g.beginPath(); g.moveTo(300,352); g.lineTo(724,352); g.stroke();
+      spacedCaps(g, 'ASSEMBLY', 512, 428, 62, 11, '#ffffff', '500');
+      g.beginPath(); g.moveTo(300,452); g.lineTo(724,452); g.stroke();
+      const d = new Date();
+      const pad = v => String(v).padStart(2,'0');
+      spacedCaps(g, pad(d.getDate())+'/'+pad(d.getMonth()+1)+'/'+d.getFullYear(),
+                 512, 504, 27, 4, 'rgba(255,255,255,.92)', '400');
       const m=new THREE.Mesh(new THREE.PlaneGeometry(6.0,3.35),
         new THREE.MeshBasicMaterial({map:new THREE.CanvasTexture(c)}));
       m.position.set(0, HALL.STAGE_Y+2.35, HALL.ZF-7.24); group.add(m);
@@ -2751,7 +2894,7 @@ const Hall = (function(){
       list[rint(0,3)] = who;
     })();
     S.openI   = 0; S.said2 = false; S.said3 = false;
-    S.vape = Math.random() < 0.2;           // one assembly in five
+    S.vape = Math.random() < 0.5;           // one assembly in five
     S.vapeStep = 0; S.vaper = null;
     S.cap=''; S.capWho='';
     deputy.position.set(STAGE_STAFF_X0 + STAGE_SEAT_P, HALL.STAGE_Y, HALL.ZF-2.6); deputy.rotation.y=0;
@@ -2762,7 +2905,14 @@ const Hall = (function(){
     yaw = 0; pitch = -0.02;   // facing the stage
   }
 
-  function say(who, line, dur){ S.cap=line; S.capWho=who; S.capT = dur||3.2; }
+  function say(who, line, dur){
+    S.cap=line; S.capWho=who; S.capT = dur||3.2;
+    // '' is a stage direction, not a person — nobody says those out loud
+    if (!who || !line) { Audio_.shutUp(); return; }
+    const deputy = /DEPUTY/.test(who);
+    const shout  = /[!?]/.test(line) || line === line.toUpperCase();
+    Audio_.voice(line, deputy ? 152 : 122, S.capT, shout);
+  }
   function clearWords(){ for (const w of words) wordGroup.remove(w.m); words.length=0; }
   function spawnWord(){
     const txt = pick(['WAKE UP','SIT UP','EYES OPEN','STAY AWAKE','NOT NOW','HEAD UP']);
@@ -3323,12 +3473,14 @@ function updateHall(dt){
     if (T(11.0)){
       S.phase = roundNo===1 ? 'clap1' : 'clap2'; S.t=0; S.clap=0; S.said1=false; S.ok=false;
       Hall.say('HEADMASTER', 'Let\u2019s give them a round of applause.', 3.2);
+      setTimeout(()=>Audio_.applause(4.6), 1500);        // the hall joins in behind you
       $('clapWrap').classList.remove('hidden');
     }
   }
   else if (ph==='clap1' || ph==='clap2'){
     if (edges[S.standKey]) Hall.punish('You stood up when you were told to clap');
-    if (edges[S.clapKey]){ S.clap += edges[S.clapKey]; Audio_.bump(); }
+    if (edges[S.clapKey]){ S.clap += edges[S.clapKey];
+      if (S.clapSfx === undefined || S.t - S.clapSfx > 0.07){ S.clapSfx = S.t; Audio_.clap(1.25); } }
     $('clapFill').style.width = Math.min(100, S.clap*11)+'%';
     if (S.clap>=9 && !S.ok){ S.ok=true; S.aura+=3; logAura('Applauded the boys on stage', 3); banner('GOOD LAD.', '+3 aura', 1500); }
     if (T(4.4)){
@@ -3604,7 +3756,12 @@ const GDAScene = (function(){
   const T = { x:-2.45, z:0, tx:-2.45, tz:0, speed:0.55, face:0, hurry:false, dwell:0, stepAcc:0 };
   // jv/g tuned so the apex ( jv^2/(2g) * 46px = ~85px ) clears the tall cactus (42px)
   // with a ~320ms window to time the press. Old values (3.1 / 11) topped out at 20px.
-  const D = { y:0, vy:0, run:0, obs:[], dead:0, speed:7.4, blink:0, jv:8.6, g:20, pop:0 };
+  /* The real Chrome dinosaur ramps from 6 to 13 at 0.001 per frame — about 0.06 a
+     second — so it takes roughly two minutes to reach top speed.  That long, barely
+     perceptible build is the whole feel of the thing.  Same curve here, in our units. */
+  const DINO_V0 = 7.4, DINO_VMAX = 15;
+  const DINO_ACCEL = (DINO_VMAX - DINO_V0) * 0.06 / (13 - 6);      // ≈ 0.065 / s
+  const D = { y:0, vy:0, run:0, obs:[], dead:0, speed:DINO_V0, blink:0, jv:8.6, g:20, pop:0 };
   const PB = BANKS[PLAYER_BANK], PZ = GDA_Z0 + PLAYER_ROW*GDA_ZP;
   const AISLES = [-2.45, 1.65];
 
@@ -3706,12 +3863,13 @@ const GDAScene = (function(){
     camShakeX = 0; camShakeY = 0;                 // Game Dev never shakes the camera
     T.x=AISLES[0]; T.z=GDA_Z0-1.2; T.tx=T.x; T.tz=T.z; T.speed=0.55; T.hurry=false; T.dwell=0; T.stepAcc=0;
     S.cleared=0;
-    D.y=0; D.vy=0; D.run=0; D.obs=[]; D.dead=0; D.speed=7.4; D.pop=0;
+    D.y=0; D.vy=0; D.run=0; D.obs=[]; D.dead=0; D.speed=DINO_V0; D.pop=0;
     teacher.position.set(T.x, 0, T.z); teacher.rotation.y=0;
     drawScreen();
     yaw = PB.face>0 ? -Math.PI/2 : Math.PI/2; pitch = -0.10;
   }
   return { build, reset, S, T, D, others, PB, PZ, AISLES, drawScreen,
+           DINO_V0, DINO_VMAX, DINO_ACCEL,
            get group(){ return group; }, get teacher(){ return teacher; } };
 })();
 
@@ -3731,10 +3889,10 @@ function updateGDA(dt){
   if (S.screen==='dino'){
     if (D.dead>0){
       D.dead -= dt;
-      if (D.dead<=0){ D.obs=[]; D.y=0; D.vy=0; D.speed=7.4; }
+      if (D.dead<=0){ D.obs=[]; D.y=0; D.vy=0; D.speed=GDAScene.DINO_V0; }
     } else {
       D.run += dt*D.speed*0.13;
-      D.speed = Math.min(15, D.speed + dt*0.28);
+      D.speed = Math.min(GDAScene.DINO_VMAX, D.speed + dt*GDAScene.DINO_ACCEL);
       S.dinoScore += dt*D.speed*1.3;          // the in-game distance counter, unchanged
       if (spaceEdge>0 && D.y<=0.01){ D.vy = D.jv; Audio_.bump(); }
       D.vy -= D.g*dt; D.y = Math.max(0, D.y + D.vy*dt);
@@ -3850,6 +4008,759 @@ function updateGDA(dt){
   if (S.t > 60 && !S.done){ S.done = true; finishGDA(); }
   spaceEdge = 0; clickEdge = false; eEdge = false; cookPressed = false; shovePressed = false;
   for (const k in edges) delete edges[k];
+}
+
+
+/* ============================================================
+   5b-ii.  THE EXAM  —  the languages room, one paper, no hope
+   ============================================================ */
+const EXAM_Y = 1600;
+const EXM = { W:4.35, ZF:-4.70, ZB:4.30, H:2.86, DESK:0.735 };
+const EXAM_COL = [-2.90, -1.55, -0.20, 1.15, 2.50];    // desk columns, left to right
+const EXAM_ROW = [-2.60, -1.35, -0.10, 1.15, 2.40];    // rows, front to back
+const EXAM_MECOL = 2, EXAM_MEROW = 2;                  // you are dead centre. No hiding.
+const EXAM_DOOR_X = -3.55;
+
+/* the paper.  Every question is real NCEA in shape and total nonsense in content. */
+const EXAM_QS = [
+  { s:'MATHEMATICS', m:3, q:'A bus leaves Westlake at 3:10pm at 40 km/h. You leave the bay at 3:14pm.',
+    sub:'Show that you are walking.',
+    a:['Prove by contradiction','40 km/h','I am walking','Not enough information given'],
+    gold:2, note:'You showed your working. It was your legs.' },
+  { s:'FRANÇAIS', m:2, q:'Traduisez : « Où est la bibliothèque ? »',
+    a:['Where is the library?','The library is shut','Je ne sais pas, monsieur','Is this in the exam?'],
+    gold:2, note:'Answered in French. Wrong, but in French.' },
+  { s:'BIOLOGY', m:4, q:'Using the diagram provided, explain the process shown.',
+    sub:'(No diagram has been provided.)',
+    a:['Photosynthesis, probably','Describe the diagram first','It is on the next page','Mitosis'],
+    gold:2, note:'It was not on the next page.' },
+  { s:'ENGLISH', m:8, q:'Analyse the author’s use of the word “the” in line 4.',
+    sub:'Support your answer with evidence from the text.',
+    a:['It is a definite article','It creates a sense of the','The author is dead','8 marks for this?'],
+    gold:2, note:'Bold reading. The marker respected it.' },
+  { s:'PHYSICS', m:5, q:'A boy of mass 68 kg is pushed onto a bus at 3:11pm.',
+    sub:'Calculate his aura. Give your answer to 2 s.f.',
+    a:['9.8 aura','Insufficient data','Aura is not a unit, sir','68'],
+    gold:2, note:'You corrected the exam paper. In the exam.' },
+  { s:'MATHEMATICS', m:1, q:'Simplify.',
+    a:['No','x','Yes','2'], gold:0, note:'Simplified.' },
+  { s:'CHEMISTRY', m:4, q:'Balance the following equation.',
+    sub:'The equation will be released with the 2027 paper.',
+    a:['Both sides equal','2H₂ + O₂ → 2H₂O','Leave it blank','Draw a cat'],
+    gold:3, note:'You drew a cat. It got a mark for effort.' },
+  { s:'GEOGRAPHY', m:3, q:'Name the three types of rock. One mark each.',
+    sub:'There are four.',
+    a:['Igneous, sedimentary, metamorphic','Big, small, medium','The fourth one','Rock'],
+    gold:2, note:'The fourth one. Nobody knows the fourth one.' },
+  { s:'ESPAÑOL', m:2, q:'¿Cómo se dice “I have not studied” en español?',
+    a:['No he estudiado','No estudio, lo siento','Sí','Escribo esto en el examen'],
+    gold:3, note:'You wrote about writing this in the exam. In Spanish.' },
+  { s:'STATISTICS', m:6, q:'87% of this examination is worth 4% of your final grade.',
+    sub:'Discuss.', a:['That is not how percentages work','Discuss what','Sample size too small','I am discussing it'],
+    gold:0, note:'Correct, and the marker knew it.' },
+  { s:'ENGLISH', m:4, q:'Write a haiku about the boy who has just left.',
+    a:['He finished early / he is walking to the gate / I am on question','Five, seven, five','I refuse','He knew nothing either'],
+    gold:0, note:'The haiku was seventeen syllables of pure pain.' },
+  { s:'TE REO MĀORI', m:2, q:'Whakamāoritia: “Kua mutu te wā.”',
+    a:['The time is up','The bus has gone','Good morning','I have run out of time'],
+    gold:0, note:'You translated it correctly. It was a warning.' },
+  { s:'ECONOMICS', m:5, q:'The canteen has 5 steam buns and 900 boys.',
+    sub:'Explain scarcity.', a:['Demand exceeds supply','I have seen this personally','Raise the price','Five is not enough'],
+    gold:1, note:'Lived experience accepted as evidence.' },
+  { s:'MATHEMATICS', m:1, q:'Turn over the page.',
+    sub:'(This is the last page.)', a:['Turn it anyway','Do not turn it','Turn it back','Ask sir'],
+    gold:0, note:'You turned it over. There was nothing there. Obviously.' },
+  { s:'PHYSICAL EDUCATION', m:3, q:'Define “fitness”.',
+    sub:'You may not use the word “fit”.', a:['Being good at running','Not unfit','The state of being fit','See diagram'],
+    gold:1, note:'“Not unfit.” Three marks. Genuinely.' },
+  { s:'HISTORY', m:9, q:'In no more than 3000 words, describe everything.',
+    a:['Everything happened','Start with the Romans','See attached (nothing attached)','Time'],
+    gold:3, note:'One word: “Time.” The marker wept.' }
+];
+
+const EXAM_BASE_N = EXAM_QS.length;      // everything above this is a joke; below it is not
+EXAM_QS.push(
+  { s:'ACADEMIC INTEGRITY', m:4, q:'Do you use AI tools to do any assessments?',
+    a:['No \u2014 it replaces thinking','Yes \u2014 it is the future, people should adapt'],
+    both:true,
+    why:'Both boxes marked correct. The marker could not decide either, and neither has your school.' },
+  { s:'GENERAL KNOWLEDGE', m:2, q:'The developer took two afternoons to make this game, using AI.',
+    a:['True','False'], correct:0,
+    why:'The marked answer is TRUE. Two afternoons \u2014 and the room you are sitting in took most of one of them.' },
+  { s:'DIGITAL TECHNOLOGIES', m:3, q:'Should you use AI to code?',
+    a:['No \u2014 because the school said so','Yes \u2014 developers use them'], correct:1,
+    why:'The marked answer is 2. The marker notes that a rule and a reason are not the same thing.' },
+  { s:'SCHOOL STUDIES', m:4, q:'Which of these is NOT widely recognised at school?',
+    a:['Academics','Music','Sports','Digital Technologies'], correct:3,
+    why:'The marked answer is Digital Technologies. No assembly. No blazer badge. No round of applause.' },
+  { s:'DIGITAL TECHNOLOGIES', m:5, q:'Is spending two thirds of a game dev lesson learning how to answer a question efficient?',
+    a:['Yes \u2014 it is what makes a game successful','No \u2014 we should spend more time building and learning'],
+    correct:1,
+    why:'The marked answer is 2. You built the thing in the end \u2014 that was the lesson.' }
+);
+
+const EXAM_INVIG = [
+  'Do not turn over your paper.',
+  'You should all have a pen and a spare pen.',
+  'Reading time. Pens down. That means down.',
+  'You may begin.',
+  'Write your student number, not your name.',
+  'There is a spare pen at the front if anyone needs one.',
+  'No, you may not go to the toilet.',
+  'Forty minutes remaining.',
+  'Twenty minutes remaining.',
+  'Ten minutes remaining.',
+  'Five minutes remaining. That is five.',
+  'Pens down. Pens down please. Pens DOWN.'
+];
+
+/* ---- the room, straight off the photograph ---- */
+function buildExamShell(){
+  const b = new Builder();
+  const W=EXM.W, ZF=EXM.ZF, ZB=EXM.ZB, H=EXM.H;
+  const CREAM=0xdcd5c8, CREAM_D=0xc9c2b4, CARPET=0x34363b, CARPET_L=0x71747a,
+        CEIL=0xf1f0ed, GRID=0xd3d2ce, RED=0xb3201f, WHITE=0xfbfbf8, STEEL=0xb9bdc2,
+        TOP=0xb8b5ad, FRAME=0xf2f2ef, SKIRT=0x4b5158;
+  // ---- carpet tiles, the odd pale one ----
+  b.box(W*2, 0.20, ZB-ZF, CARPET, 0, -0.10, (ZF+ZB)/2);
+  for (let x=-W+0.5; x<W; x+=0.98) for (let z=ZF+0.5; z<ZB; z+=0.98)
+    if (Math.random()<0.13) b.box(0.94,0.012,0.94, CARPET_L, x, 0.006, z);
+  // ---- suspended ceiling: tile grid + recessed panels ----
+  b.box(W*2, 0.10, ZB-ZF, CEIL, 0, H+0.05, (ZF+ZB)/2);
+  for (let x=-W+0.6; x<W; x+=1.20) b.box(0.035, 0.02, ZB-ZF, GRID, x, H-0.01, (ZF+ZB)/2);
+  for (let z=ZF+0.6; z<ZB; z+=1.20) b.box(W*2, 0.02, 0.035, GRID, 0, H-0.01, z);
+  for (const x of [-2.35, 0.55]) for (const z of [ZF+1.7, ZF+4.4, ZF+7.1])
+    b.box(1.06, 0.045, 0.28, 0xfdfcf2, x, H-0.03, z);
+  // ---- walls ----
+  b.box(0.14, H, ZB-ZF, CREAM, -W, H/2, (ZF+ZB)/2);          // left (windows go on it)
+  b.box(0.14, H, ZB-ZF, CREAM,  W, H/2, (ZF+ZB)/2);          // right (storage)
+  b.box(W*2, H, 0.14, CREAM, 0, H/2, ZF);                    // front (whiteboard)
+  b.box(W*2, H, 0.14, CREAM, 0, H/2, ZB);                    // back
+  for (const [sx,sz,w,d] of [[-W+0.10,0,0.05,ZB-ZF],[W-0.10,0,0.05,ZB-ZF]])
+    b.box(w, 0.14, d, SKIRT, sx, 0.07, sz);
+  b.box(W*2, 0.14, 0.05, SKIRT, 0, 0.07, ZF+0.10);
+  b.box(W*2, 0.14, 0.05, SKIRT, 0, 0.07, ZB-0.10);
+  // ---- the window band down the left, with the red pinboard set into it ----
+  const WY0=1.16, WY1=H-0.30;
+  b.box(0.10, 0.09, ZB-ZF-0.4, STEEL, -W+0.09, WY0, (ZF+ZB)/2);
+  b.box(0.10, 0.09, ZB-ZF-0.4, STEEL, -W+0.09, WY1, (ZF+ZB)/2);
+  b.box(0.10, WY1-WY0, 0.09, STEEL, -W+0.09, (WY0+WY1)/2, ZF+0.30);
+  b.box(0.10, WY1-WY0, 0.09, STEEL, -W+0.09, (WY0+WY1)/2, ZB-0.30);
+  // glass in two runs, red board between them
+  const PB0 = -0.95, PB1 = 1.05;                       // pinboard extent in z
+  for (const [z0,z1] of [[ZF+0.35, PB0],[PB1, ZB-0.35]]){
+    b.box(0.04, WY1-WY0-0.06, (z1-z0), 0x9fc4dd, -W+0.10, (WY0+WY1)/2, (z0+z1)/2);
+    for (let z=z0+0.9; z<z1-0.2; z+=0.9)               // louvre mullions
+      b.box(0.09, WY1-WY0-0.06, 0.06, STEEL, -W+0.09, (WY0+WY1)/2, z);
+    b.box(0.09, 0.05, (z1-z0), STEEL, -W+0.09, WY0+(WY1-WY0)*0.62, (z0+z1)/2);
+  }
+  b.box(0.05, WY1-WY0+0.28, (PB1-PB0), RED, -W+0.11, (WY0+WY1)/2-0.06, (PB0+PB1)/2);
+  // white paper bunting and photos pinned to it
+  for (let i=0;i<14;i++){
+    const z = PB0+0.16 + Math.random()*(PB1-PB0-0.32);
+    const y = WY0-0.02 + Math.random()*(WY1-WY0);
+    b.box(0.02, 0.16, 0.15, 0xf6f5f1, -W+0.14, y, z, Math.random()*1.2-0.6, 0, 0);
+  }
+  for (let i=0;i<6;i++)
+    b.box(0.02, 0.17, 0.13, 0x8d8a82, -W+0.145, WY0+0.30+ (i%3)*0.34, PB0+0.35+Math.floor(i/3)*1.0);
+  // hills and trees out of the window
+  b.box(0.3, 3.2, (ZB-ZF), 0x8fb7d8, -W-9.0, 2.2, (ZF+ZB)/2);
+  for (let z=ZF; z<ZB; z+=1.15){
+    b.box(0.5, 1.5+Math.random()*1.1, 0.9, [0x3f6b3a,0x35602f,0x4a7742][((z*7)|0)%3], -W-3.1, 1.1, z);
+  }
+  b.box(6.0, 0.2, (ZB-ZF)+4, 0x6f8f5e, -W-3.4, 0.0, (ZF+ZB)/2);
+  // ---- front wall: whiteboard, projector, clock, speakers ----
+  b.box(2.70, 1.16, 0.05, WHITE, 0.55, 1.62, ZF+0.10);
+  b.box(2.80, 0.06, 0.07, STEEL, 0.55, 2.23, ZF+0.11);
+  b.box(2.80, 0.06, 0.07, STEEL, 0.55, 1.02, ZF+0.11);
+  b.box(0.06, 1.22, 0.07, STEEL, -0.83, 1.62, ZF+0.11);
+  b.box(0.06, 1.22, 0.07, STEEL, 1.93, 1.62, ZF+0.11);
+  b.box(2.20, 0.05, 0.09, 0xe4e2dc, 0.55, 1.00, ZF+0.14);      // pen tray
+  b.box(0.12,0.03,0.03, 0x2a2d33, 0.10, 1.04, ZF+0.16);
+  b.box(0.12,0.03,0.03, 0xb02a2a, 0.30, 1.04, ZF+0.16);
+  // projector on its ceiling arm
+  b.box(0.07, 0.44, 0.07, 0xcfcdc7, 0.55, H-0.24, ZF+0.62);
+  b.box(0.09, 0.07, 0.62, 0xcfcdc7, 0.55, H-0.44, ZF+0.40);
+  b.box(0.40, 0.13, 0.34, 0xeceae4, 0.55, H-0.56, ZF+0.66);
+  b.cyl(0.055,0.055,0.05,10, 0x1b1d21, 0.55, H-0.60, ZF+0.50, Math.PI/2,0,0);
+  b.box(0.05,0.05,0.20, 0x9aa0a6, 0.55, H-0.50, ZF+0.30);
+  for (const sx of [-1.05, 2.18]){                              // speakers
+    b.box(0.16, 0.30, 0.13, 0x2f3237, sx, 2.32, ZF+0.13);
+    b.box(0.13, 0.10, 0.02, 0x1a1c20, sx, 2.36, ZF+0.20);
+  }
+  // ---- the right wall: storage trolleys, red crate, sockets ----
+  for (const z of [1.05, 2.35]){
+    b.box(0.52, 0.86, 1.12, 0x2b2e33, W-0.36, 0.44, z);         // dark frame
+    for (let i=0;i<4;i++)
+      b.box(0.50, 0.16, 1.04, 0xd7dee4, W-0.35, 0.16+i*0.21, z);// clear drawers
+    b.box(0.03, 0.11, 0.52, 0xf7f7f2, W-0.62, 0.72, z);         // the label
+  }
+  b.box(0.66, 0.05, 1.00, TOP, W-0.44, 0.62, -0.55);            // low table
+  for (const dx of [-0.24,0.24]) for (const dz of [-0.42,0.42])
+    b.box(0.04,0.60,0.04, FRAME, W-0.44+dx, 0.30, -0.55+dz);
+  b.box(0.40, 0.24, 0.56, 0xe0451e, W-0.44, 0.76, -0.62);       // red crate
+  b.box(0.26, 0.10, 0.32, 0x2f5fbf, W-0.50, 0.92, -0.70);       // blue bag in it
+  b.box(0.30, 0.09, 0.34, 0xc9b48a, W-0.46, 0.68, 0.15);        // cardboard box
+  for (const z of [-0.05, 0.60]) b.box(0.03,0.11,0.16, 0xf2f2ee, W-0.13, 0.32, z);
+  // a curtain bunched in the back corner
+  for (let i=0;i<7;i++)
+    b.box(0.16, 2.10, 0.13, (i%2?0x8e8c86:0x7c7a74), W-0.22, 1.10, ZB-0.40-i*0.12);
+  // ---- back-corner cupboard, like the white one in the photo ----
+  b.box(0.52, 1.55, 0.90, 0xf0efe9, -W+0.44, 0.78, ZF+0.85);
+  b.box(0.03, 1.45, 0.42, 0xdad8d2, -W+0.71, 0.78, ZF+0.66);
+  b.box(0.30, 0.10, 0.42, 0xc9b48a, -W+0.44, 1.60, ZF+0.85);
+  // ---- the door, front left ----
+  b.box(0.06, 2.05, 0.92, 0xe6e3da, EXAM_DOOR_X, 1.03, ZF+0.11, 0,0,0);
+  b.box(0.05, 0.60, 0.40, 0x9fc4dd, EXAM_DOOR_X, 1.52, ZF+0.09);
+  b.box(0.05, 0.07, 0.10, 0x8b8f95, EXAM_DOOR_X-0.36, 1.02, ZF+0.07);
+  // ---- desks and chairs: single desks, white frames, grey tops ----
+  for (let c=0;c<EXAM_COL.length;c++) for (let r=0;r<EXAM_ROW.length;r++){
+    const x = EXAM_COL[c], z = EXAM_ROW[r] - 0.34;
+    b.box(0.62, 0.035, 0.50, TOP, x, EXM.DESK, z);
+    b.box(0.63, 0.02, 0.51, 0xe9e7e1, x, EXM.DESK-0.024, z);
+    for (const dx of [-0.26, 0.26]){
+      b.box(0.035, EXM.DESK-0.04, 0.035, FRAME, x+dx, (EXM.DESK-0.04)/2, z-0.19);
+      b.box(0.035, EXM.DESK-0.04, 0.035, FRAME, x+dx, (EXM.DESK-0.04)/2, z+0.19);
+      b.box(0.035, 0.035, 0.42, FRAME, x+dx, EXM.DESK-0.10, z);
+      b.box(0.035, 0.035, 0.30, FRAME, x+dx, 0.03, z);
+    }
+    b.box(0.50, 0.03, 0.03, FRAME, x, 0.30, z+0.16);
+    // chair: black shell, white tube legs
+    const cz = EXAM_ROW[r] + 0.10;
+    b.box(0.40, 0.045, 0.38, 0x191b1f, x, 0.44, cz);
+    b.box(0.40, 0.42, 0.05, 0x191b1f, x, 0.66, cz+0.17, -0.16);
+    for (let i=0;i<5;i++) b.box(0.03,0.30,0.02, 0x2c2f34, x-0.12+i*0.06, 0.66, cz+0.185, -0.16);
+    for (const dx of [-0.16,0.16]){
+      b.box(0.028,0.44,0.028, FRAME, x+dx, 0.22, cz-0.15);
+      b.box(0.028,0.44,0.028, FRAME, x+dx, 0.22, cz+0.15);
+      b.box(0.028,0.028,0.34, FRAME, x+dx, 0.06, cz);
+    }
+  }
+  return b.build();
+}
+
+function buildInvigilator(){
+  const b=new Builder(); const skin=SKIN[1];
+  b.box(0.19,0.90,0.21, 0x2b3038, -0.112, 0.45, 0);
+  b.box(0.19,0.90,0.21, 0x2b3038,  0.112, 0.45, 0);
+  b.box(0.19,0.10,0.30, 0x131417, -0.112, 0.05, 0.045);
+  b.box(0.19,0.10,0.30, 0x131417,  0.112, 0.05, 0.045);
+  b.box(0.50,0.66,0.29, 0xf2f2ee, 0, 1.22, 0);                  // white shirt
+  b.box(0.075,0.36,0.02, 0x2b3038, 0, 1.30, 0.155);             // dark tie
+  b.box(0.03,0.30,0.02, 0x2f6fa8, 0, 1.34, 0.168);              // lanyard
+  b.box(0.09,0.13,0.02, 0xf7f7f2, 0, 1.14, 0.170);              // the ID card
+  b.box(0.135,0.56,0.16, 0xf2f2ee, -0.315, 1.19, 0.01);
+  b.box(0.135,0.56,0.16, 0xf2f2ee,  0.315, 1.19, 0.01);
+  b.box(0.11,0.105,0.135, skin, -0.315, 0.875, 0.01);
+  b.box(0.11,0.105,0.135, skin,  0.315, 0.875, 0.01);
+  b.box(0.30,0.02,0.24, 0xd9d6cc, 0.30, 0.95, 0.16, -0.5);      // clipboard
+  b.box(0.145,0.10,0.145, skin, 0, 1.60, 0);
+  b.box(0.245,0.285,0.245, skin, 0, 1.79, 0);
+  b.box(0.255,0.11,0.255, 0x3b3b3b, 0, 1.945, 0);
+  b.box(0.26,0.12,0.10, 0x3b3b3b, 0, 1.83, -0.082);
+  b.box(0.035,0.028,0.02, 0x1a1a1a, -0.056, 1.805, 0.122);
+  b.box(0.035,0.028,0.02, 0x1a1a1a,  0.056, 1.805, 0.122);
+  return b.build();
+}
+
+/* ---- the paper ---- */
+const EXAM_CW = 660, EXAM_CH = 880;
+function drawExamPaper(cv, S){
+  const g = cv.getContext('2d');
+  g.setTransform(1,0,0,1,0,0);
+  g.clearRect(0,0,EXAM_CW,EXAM_CH);
+  g.save();
+  const jit = S.panic*4;
+  g.translate(rand(-jit,jit), rand(-jit,jit));
+  g.fillStyle = '#f7f6f0'; g.fillRect(0,0,EXAM_CW,EXAM_CH);
+  g.fillStyle = '#e9e7dd'; g.fillRect(0,0,EXAM_CW,74);
+  g.textAlign='left'; g.fillStyle='#1b1b1b';
+  /* Perspective squashes the far half of the page to nothing, so everything that
+     matters lives in the bottom two thirds, where you can actually read it. */
+  if (S.stage === 'cover' || S.stage === 'reading'){
+    g.font = '900 27px Georgia, serif'; g.fillStyle='#3a3a3a';
+    g.fillText('WESTLAKE BOYS HIGH SCHOOL', 46, 168);
+    g.font = '20px Georgia, serif'; g.fillStyle='#5a5a5a';
+    g.fillText('Senior Practice Examination · Period 5', 46, 200);
+    g.strokeStyle='#1b1b1b'; g.lineWidth=2;
+    g.beginPath(); g.moveTo(46,222); g.lineTo(EXAM_CW-46,222); g.stroke();
+    g.fillStyle='#1b1b1b'; g.font='900 66px Georgia, serif';
+    g.fillText('EVERYTHING', 46, 300);
+    g.font='21px Georgia, serif'; g.fillStyle='#444';
+    g.fillText('Level 2 · 90 credits · every subject at once', 46, 338);
+    g.font='22px Georgia, serif'; g.fillStyle='#1b1b1b';
+    ['Time allowed: not enough.',
+     'Answer ALL questions. There are more than you think.',
+     'Do not write your name. Write your student number.',
+     'You do not know your student number.'].forEach((t,i)=>g.fillText('•  '+t, 52, 400+i*40));
+    g.textAlign='center';
+    if (S.stage === 'cover'){
+      g.fillStyle='#b3201f'; g.font='900 52px Georgia, serif';
+      g.fillText('DO NOT TURN OVER', EXAM_CW/2, 660);
+      g.font='23px Georgia, serif'; g.fillStyle='#555';
+      g.fillText('until you are told to do so', EXAM_CW/2, 700);
+    } else {
+      g.fillStyle='#b3201f'; g.font='900 60px Georgia, serif';
+      g.fillText('READING TIME', EXAM_CW/2, 640);
+      g.font='900 34px Georgia, serif';
+      g.fillText('PENS DOWN', EXAM_CW/2, 690);
+      g.font='22px Georgia, serif'; g.fillStyle='#555';
+      g.fillText(Math.max(0, Math.ceil(S.readLeft)) + ' more seconds of looking at it', EXAM_CW/2, 736);
+      if (S.nagT > 0){
+        g.fillStyle='#b3201f'; g.font='900 30px Georgia, serif';
+        g.fillText('THAT MEANS DOWN', EXAM_CW/2, 800);
+      }
+    }
+    g.restore(); return;
+  }
+  if (S.stage === 'done'){
+    g.textAlign='center';
+    g.fillStyle='#1b1b1b'; g.font='900 66px Georgia, serif';
+    g.fillText('PENS DOWN', EXAM_CW/2, 380);
+    g.font='25px Georgia, serif'; g.fillStyle='#444';
+    g.fillText('Remain seated and silent.', EXAM_CW/2, 434);
+    g.fillText('Papers will be collected from the front.', EXAM_CW/2, 472);
+    g.font='900 40px Georgia, serif'; g.fillStyle='#b3201f';
+    g.fillText(S.answered + ' of ' + EXAM_QS.length + ' attempted', EXAM_CW/2, 596);
+    g.font='23px Georgia, serif'; g.fillStyle='#666';
+    g.fillText(S.blanks ? S.blanks + ' left completely blank' : 'not one box left empty', EXAM_CW/2, 642);
+    g.font='900 32px Georgia, serif'; g.fillStyle='#1f7a3d';
+    g.fillText((S.right||0) + ' marked correct', EXAM_CW/2, 706);
+    g.restore(); return;
+  }
+  // ---- a question ----
+  const Q = examQ(S);
+  const R = (S.flash > 0) ? S.reveal : null;
+  g.fillStyle='#8a8a8a'; g.font='18px Georgia, serif';
+  g.fillText((S.right||0) + ' marked correct', 46, 186);
+  g.textAlign='right'; g.fillText('page ' + (S.qi+1) + ' of ' + examTotal(S), EXAM_CW-46, 186);
+  g.textAlign='left';
+  g.strokeStyle='#c9c7bd'; g.lineWidth=1;
+  g.beginPath(); g.moveTo(46,206); g.lineTo(EXAM_CW-46,206); g.stroke();
+  g.fillStyle='#b3201f'; g.font='900 27px Georgia, serif';
+  g.fillText(Q.s, 46, 252);
+  g.textAlign='right'; g.fillStyle='#555'; g.font='italic 21px Georgia, serif';
+  g.fillText('('+Q.m+' mark'+(Q.m===1?'':'s')+')', EXAM_CW-46, 252);
+  g.textAlign='left';
+  g.fillStyle='#111'; g.font='900 31px Georgia, serif';
+  let y = 306;
+  for (const ln of wrapTxt(g, 'Q'+(S.qi+1)+'.  ' + Q.q, EXAM_CW-92)){ g.fillText(ln, 46, y); y += 41; }
+  if (Q.sub){
+    g.fillStyle='#4a4a4a'; g.font='italic 24px Georgia, serif';
+    for (const ln of wrapTxt(g, Q.sub, EXAM_CW-92)){ g.fillText(ln, 46, y+4); y += 34; }
+  }
+  y += 20;
+  const GREEN='#1f7a3d', RED='#b3201f';
+  const bottom = R ? EXAM_CH - 152 : EXAM_CH - 56;
+  const pitch = Math.min(104, (bottom - y) / Q.a.length);
+  Q.a.forEach((opt,i)=>{
+    const boxY = y + i*pitch, bh = pitch - 16;
+    const chosen = R && R.chosen === i;
+    const isKey  = R && R.correct === i;
+    const col = !R ? '#9b998f' : (chosen ? (R.right ? GREEN : RED) : (isKey ? GREEN : '#c3c1b8'));
+    g.strokeStyle = col; g.lineWidth = (chosen || isKey) ? 4 : 1.5;
+    g.strokeRect(46, boxY, EXAM_CW-92, bh);
+    g.fillStyle = (chosen || isKey) ? col : '#1b1b1b';
+    g.font='900 32px Georgia, serif';
+    g.fillText(String(i+1), 64, boxY+bh*0.66);
+    g.fillStyle = (chosen || isKey) ? col : (R ? '#7d7b73' : '#222'); g.font='23px Georgia, serif';
+    const lns = wrapTxt(g, opt, EXAM_CW-190);
+    lns.forEach((ln,k)=>g.fillText(ln, 106, boxY + (lns.length>1 ? bh*0.42 : bh*0.64) + k*29));
+    if (chosen || isKey){                      // the marker's pen, straight over the box
+      const mx = EXAM_CW-96, my = boxY + bh*0.5;
+      g.strokeStyle = col; g.lineWidth = 6; g.lineCap='round'; g.beginPath();
+      if (chosen && !R.right){ g.moveTo(mx-16,my-16); g.lineTo(mx+16,my+16);
+                               g.moveTo(mx+16,my-16); g.lineTo(mx-16,my+16); }
+      else { g.moveTo(mx-18,my); g.lineTo(mx-4,my+16); g.lineTo(mx+18,my-18); }
+      g.stroke(); g.lineCap='butt';
+    }
+  });
+  if (R){
+    g.strokeStyle='#c9c7bd'; g.lineWidth=1;
+    g.beginPath(); g.moveTo(46,EXAM_CH-136); g.lineTo(EXAM_CW-46,EXAM_CH-136); g.stroke();
+    g.fillStyle = R.right ? GREEN : RED; g.font='900 30px Georgia, serif';
+    g.fillText(R.right ? 'CORRECT' : 'INCORRECT', 46, EXAM_CH-100);
+    g.fillStyle='#3a3a3a'; g.font='italic 21px Georgia, serif';
+    let wy = EXAM_CH-66;
+    for (const ln of wrapTxt(g, R.why, EXAM_CW-92)){ g.fillText(ln, 46, wy); wy += 27; }
+  }
+  g.restore();
+}
+function wrapTxt(g, txt, max){
+  const words = String(txt).split(' '), out=[]; let line='';
+  for (const w of words){
+    const t = line ? line+' '+w : w;
+    if (g.measureText(t).width > max && line){ out.push(line); line = w; } else line = t;
+  }
+  if (line) out.push(line);
+  return out;
+}
+
+const ExamScene = (function(){
+  let group=null, built=false, invig=null, paperTex=null, paperCan=null;
+  let clockH=null, clockM=null, clockS=null;
+  const seats = [];          // one per desk: {c,r,x,z,mesh,gone}
+  const S = { t:0, aura:0, stage:'cover', qi:0, answered:0, blanks:0, panic:0, readLeft:0,
+              flash:0, flashI:-1, nagT:0, nags:0, breaches:0, finished:0, done:false,
+              coughT:0, tickT:0, said:-1, names:[], walkers:[], goldHits:0 };
+  const I = { x:1.90, z:-3.30, tx:1.90, tz:-3.30, face:0, stepAcc:0, dwell:0 };
+  const ME_X = EXAM_COL[EXAM_MECOL], ME_Z = EXAM_ROW[EXAM_MEROW];
+
+  function build(){
+    if (built) return; built = true;
+    group = new THREE.Group(); group.position.set(0, EXAM_Y, 0);
+    group.add(new THREE.Mesh(buildExamShell(), VMAT({side:THREE.DoubleSide})));
+    // a paper on every desk
+    const pap = new Builder();
+    for (let c=0;c<EXAM_COL.length;c++) for (let r=0;r<EXAM_ROW.length;r++){
+      if (c===EXAM_MECOL && r===EXAM_MEROW) continue;
+      pap.box(0.30,0.004,0.42, 0xf4f3ed, EXAM_COL[c]+rand(-0.03,0.03), EXM.DESK+0.020,
+              EXAM_ROW[r]-0.34+rand(-0.02,0.02), 0, rand(-0.12,0.12), 0);
+      pap.box(0.012,0.010,0.13, [0x1b3a8a,0x14161a,0x1b3a8a][rint(0,2)],
+              EXAM_COL[c]+0.20, EXM.DESK+0.026, EXAM_ROW[r]-0.30, 0, rand(-0.6,0.6), 0);
+    }
+    group.add(new THREE.Mesh(pap.build(), VMAT()));
+    // your paper
+    paperCan = document.createElement('canvas');
+    paperCan.width = EXAM_CW; paperCan.height = EXAM_CH;
+    paperTex = new THREE.CanvasTexture(paperCan);
+    const mine = new THREE.Mesh(new THREE.PlaneGeometry(0.45,0.60),
+      new THREE.MeshBasicMaterial({map:paperTex}));
+    mine.position.set(ME_X, EXM.DESK+0.022, ME_Z-0.32);
+    mine.rotation.set(-Math.PI/2, 0, 0);
+    group.add(mine);
+    const pen = new Builder();
+    pen.box(0.013,0.011,0.14, 0x14161a, ME_X+0.24, EXM.DESK+0.026, ME_Z-0.30, 0, 0.35, 0);
+    pen.box(0.013,0.011,0.14, 0x1b3a8a, ME_X+0.27, EXM.DESK+0.026, ME_Z-0.24, 0, 0.15, 0);
+    group.add(new THREE.Mesh(pen.build(), VMAT()));
+    // the rest of the year group
+    for (let c=0;c<EXAM_COL.length;c++) for (let r=0;r<EXAM_ROW.length;r++){
+      if (c===EXAM_MECOL && r===EXAM_MEROW) continue;
+      const m = new THREE.Mesh(buildSeated(), studentMat);
+      m.position.set(EXAM_COL[c], 0.48, EXAM_ROW[r]+0.10);
+      m.rotation.y = Math.PI;                          // facing the front
+      m.scale.setScalar(rand(0.95,1.05));
+      group.add(m);
+      seats.push({ c, r, x:EXAM_COL[c], z:EXAM_ROW[r]+0.10, mesh:m, gone:false });
+    }
+    invig = new THREE.Mesh(buildInvigilator(), studentMat);
+    group.add(invig);
+    // the clock above the whiteboard
+    const face = new THREE.Mesh(new THREE.CylinderGeometry(0.145,0.145,0.045,20),
+      new THREE.MeshLambertMaterial({color:0xf7f7f2}));
+    face.rotation.x = Math.PI/2; face.position.set(2.60, 2.35, EXM.ZF+0.12); group.add(face);
+    const rim = new THREE.Mesh(new THREE.TorusGeometry(0.147,0.012,6,20),
+      new THREE.MeshLambertMaterial({color:0x2a2d33}));
+    rim.position.set(2.60, 2.35, EXM.ZF+0.14); group.add(rim);
+    const hand = (len,w,col,zoff)=>{
+      const m = new THREE.Mesh(new THREE.PlaneGeometry(w,len),
+        new THREE.MeshBasicMaterial({color:col, side:THREE.DoubleSide}));
+      const p = new THREE.Group();
+      m.position.y = len/2; p.add(m);
+      p.position.set(2.60, 2.35, EXM.ZF+0.145+zoff); group.add(p); return p;
+    };
+    clockH = hand(0.075,0.014,0x1b1b1b,0.000);
+    clockM = hand(0.115,0.010,0x1b1b1b,0.004);
+    clockS = hand(0.125,0.005,0xb3201f,0.008);
+    for (const z of [EXM.ZF+2.0, EXM.ZF+5.0, EXM.ZF+8.0]){
+      const pl = new THREE.PointLight(0xfff6e6, 0.52, 9, 2); pl.position.set(0, EXM.H-0.35, z); group.add(pl);
+    }
+    const wl = new THREE.PointLight(0xdcecff, 0.70, 12, 2); wl.position.set(-EXM.W+1.2, 1.9, 0); group.add(wl);
+    group.visible = false; scene.add(group);
+  }
+
+  function reset(){
+    build();
+    group.visible = true;
+    S.t=0; S.aura=0; S.stage='cover'; S.qi=0; S.answered=0; S.blanks=0; S.panic=0;
+    S.readLeft=EXAM_READ_END; S.flash=0; S.flashI=-1; S.nagT=0; S.nags=0;
+    S.breaches=0; S.finished=0; S.done=false; S.coughT=rand(3,7); S.tickT=0; S.said=-1;
+    S.goldHits=0;
+    S.names = pickNames(6, []);
+    // the sixteen jokes keep their order; the five real ones are scattered through the
+    // first dozen pages, so they actually turn up before the clock runs out
+    S.order = []; for (let i=0;i<EXAM_BASE_N;i++) S.order.push(i);
+    const extra = []; for (let i=EXAM_BASE_N;i<EXAM_QS.length;i++) extra.push(i);
+    for (let i=extra.length-1;i>0;i--){ const j=rint(0,i); const t=extra[i]; extra[i]=extra[j]; extra[j]=t; }
+    const slots = [];
+    while (slots.length < extra.length){ const k = rint(0, 8); if (slots.indexOf(k) < 0) slots.push(k); }
+    slots.sort((a,b)=>a-b);
+    for (let i=0;i<extra.length;i++) S.order.splice(slots[i]+i, 0, extra[i]);
+    S.right = 0; S.reveal = null;
+    for (const s of seats){ s.gone=false; if (s.mesh) s.mesh.visible=true; }
+    for (const w of S.walkers) if (w.mesh) group.remove(w.mesh);
+    S.walkers.length = 0;
+    // who is going to finish early, and in what order
+    const pool = seats.filter(s => !(s.c===EXAM_MECOL && s.r===EXAM_MEROW));
+    S.leavers = [];
+    for (let i=0;i<6 && pool.length;i++) S.leavers.push(pool.splice(rint(0,pool.length-1),1)[0]);
+    I.x=1.90; I.z=-3.30; I.tx=1.90; I.tz=-3.30; I.dwell=0; I.stepAcc=0;
+    invig.position.set(I.x, 0, I.z); invig.rotation.y = Math.PI;
+    camShakeX=0; camShakeY=0;
+    yaw = 0; pitch = -0.62;                       // head down, facing the front of the room
+    draw();
+  }
+  function draw(){ drawExamPaper(paperCan, S); paperTex.needsUpdate = true; }
+  return { build, reset, S, I, seats, ME_X, ME_Z, draw,
+           get group(){ return group; }, get invig(){ return invig; },
+           get clock(){ return {h:clockH, m:clockM, s:clockS}; } };
+})();
+
+const EXAM_READ_END = 11.0;      // reading time ends here
+const EXAM_PENS_DOWN = 76.0;     // and the whole thing ends here
+const EXAM_OVER = 82.0;
+const EXAM_LEAVE_AT = [21.0, 31.0, 41.0, 50.0, 58.0, 67.0];
+const EXAM_NAG = [
+  'PENS DOWN.', 'THAT IS STILL READING TIME.', 'PUT IT DOWN.',
+];
+const EXAM_LEAVE_SUB = [
+  'He has not checked a single answer.',
+  'He looked relaxed about it, as well.',
+  'He is going to say it was easy.',
+  'That is four now. Four.',
+  'The room is emptying around you.',
+  'You are the last one still writing.'
+];
+
+const EXAM_AISLE = [-2.22, -0.87, 0.47, 1.82];
+function examQ(S){ return EXAM_QS[ S.order ? S.order[S.qi] : S.qi ] || EXAM_QS[0]; }
+function examTotal(S){ return S.order ? S.order.length : EXAM_QS.length; }
+function examCorrect(Q){ return Q.correct !== undefined ? Q.correct : Q.gold; }
+function examPressed(){
+  for (let n=1;n<=4;n++) if (edges['Digit'+n] || edges['Numpad'+n]) return n;
+  return 0;
+}
+function examSay(i){
+  const S = ExamScene.S;
+  if (S.said === i) return;
+  S.said = i;
+  S.cap = EXAM_INVIG[i]; S.capWho = 'MR HALLORAN'; S.capT = 3.4;
+  const line = EXAM_INVIG[i];
+  Audio_.voice(line, 118, 3.4, /[!?]/.test(line) || line === line.toUpperCase());
+}
+function examAnswer(n){
+  const S = ExamScene.S, Q = examQ(S), i = n-1;
+  if (i >= Q.a.length) return;                 // that box does not exist on this page
+  const ci = examCorrect(Q);
+  const right = !!Q.both || i === ci;
+  S.flash = Q.why ? 2.5 : 1.7; S.flashI = i;
+  S.answered++;
+  S.aura += 3; logAura('Wrote something in a box', 3);
+  Audio_.pen();
+  S.reveal = { chosen:i, correct: Q.both ? i : ci, right,
+               why: Q.why || (right ? (Q.note||'') : ('The marked answer was ' + (ci+1) + '. ' + (Q.note||''))) };
+  if (right){
+    S.right++; S.aura += 5; S.goldHits++;
+    logAura(Q.why ? ('Marked correct \u2014 ' + Q.s.toLowerCase()) : Q.note, 5);
+    setTimeout(()=>Audio_.point(), 90);
+    banner('CORRECT.', S.reveal.why, 3200);
+  } else {
+    setTimeout(()=>Audio_.grunt(), 90);
+    banner('INCORRECT.', S.reveal.why, 3200);
+  }
+}
+function examSpawnLeaver(seat, idx){
+  const S = ExamScene.S;
+  if (!seat) return;
+  seat.gone = true; if (seat.mesh) seat.mesh.visible = false;
+  const m = new THREE.Mesh(STUDENT_GEOS[rint(0,STUDENT_GEOS.length-1)], studentMat);
+  m.position.set(seat.x, 0, seat.z);
+  m.rotation.y = Math.PI;
+  ExamScene.group.add(m);
+  let ax = EXAM_AISLE[0];
+  for (const a of EXAM_AISLE) if (Math.abs(a-seat.x) < Math.abs(ax-seat.x)) ax = a;
+  S.walkers.push({ mesh:m, leg:0, ax, stepAcc:0 });
+  S.finished++;
+  Audio_.scrape();
+  const nm = S.names[idx % S.names.length] || 'Someone';
+  banner(nm.toUpperCase() + ' HAS FINISHED.',
+    (S.stage==='writing' ? 'You are on question ' + (S.qi+1) + ' of ' + examTotal(S) + '. ' : '')
+    + (EXAM_LEAVE_SUB[idx] || ''), 3400);
+}
+function examWalkers(dt){
+  const S = ExamScene.S;
+  const DX = EXAM_DOOR_X + 0.45, DZ = EXM.ZF + 0.75;
+  for (let i=S.walkers.length-1; i>=0; i--){
+    const w = S.walkers[i], p = w.mesh.position;
+    let tx, tz;
+    if (w.leg === 0){ tx = w.ax; tz = p.z; if (Math.abs(p.x-tx) < 0.06) w.leg = 1; }
+    if (w.leg === 1){ tx = w.ax; tz = EXM.ZF + 1.30; if (Math.abs(p.z-tz) < 0.10) w.leg = 2; }
+    if (w.leg === 2){ tx = DX; tz = DZ; }
+    const dx = tx - p.x, dz = tz - p.z, d = Math.hypot(dx,dz);
+    const step = Math.min(d, 1.45*dt);
+    if (d > 0.001){ p.x += (dx/d)*step; p.z += (dz/d)*step;
+      w.mesh.rotation.y = Math.atan2(dx, dz);
+      w.stepAcc += step;
+      if (w.stepAcc > 0.52){ w.stepAcc = 0;
+        Audio_.step(1/(1+Math.hypot(p.x-ExamScene.ME_X, p.z-ExamScene.ME_Z)*0.5)); }
+    }
+    p.y = Math.abs(Math.sin(w.stepAcc*6))*0.02;
+    if (w.leg === 2 && d < 0.35){
+      Audio_.doorShut();
+      ExamScene.group.remove(w.mesh); S.walkers.splice(i,1);
+    }
+  }
+}
+function updateExam(dt){
+  const E = ExamScene, S = E.S, I = E.I;
+  S.t += dt;
+  const press = examPressed();
+
+  /* ---- the stages of suffering ---- */
+  if (S.stage === 'cover'){
+    if (S.t > 0.5) examSay(0);
+    if (S.t > 2.0) examSay(1);
+    if (S.t > 3.4){ S.stage = 'reading'; examSay(2); banner('READING TIME.', 'Pens down. You may only look at it.', 3200); }
+  }
+  else if (S.stage === 'reading'){
+    S.readLeft = EXAM_READ_END - S.t;
+    if (press){
+      S.nagT = 1.4;
+      if (S.nags < 3){ S.nags++; S.aura -= 2; logAura('Picked up your pen in reading time', -2); }
+      Audio_.whistle();
+      banner(EXAM_NAG[Math.min(S.nags-1,2)] || 'PENS DOWN.',
+             S.nags>=3 ? 'He has stopped writing your name down. He has memorised it.'
+                       : 'He is writing something on his clipboard.', 2600);
+    }
+    if (S.t >= EXAM_READ_END){
+      S.stage = 'writing'; examSay(3); Audio_.paperFlip();
+      banner('YOU MAY BEGIN.', '16 questions. Roughly fifty seconds. Good luck.', 3000);
+    }
+  }
+  else if (S.stage === 'writing'){
+    if (press) examAnswer(press);
+    if (S.flash > 0){
+      S.flash -= dt;
+      if (S.flash <= 0){
+        S.flashI = -1; S.reveal = null;
+        if (S.qi < examTotal(S)-1) S.qi++;
+        else {
+          S.stage = 'done'; S.aura += 15; S.blanks = 0;
+          S.t = Math.max(S.t, EXAM_OVER - 6.5);      // no sitting there for half a minute
+          logAura('Answered every single question', 15);
+          banner('YOU FINISHED THE PAPER.', 'Nobody finishes the paper. Sit back down.', 4000);
+        }
+      }
+    }
+    const left = EXAM_PENS_DOWN - S.t;
+    if (left < 20.2 && left > 19.8) examSay(8);
+    if (left < 10.2 && left > 9.8){ examSay(9); banner('TEN MINUTES REMAINING.', 'You have done ' + S.answered + '.', 2600); }
+    if (S.t >= EXAM_PENS_DOWN){
+      S.stage = 'done'; S.blanks = EXAM_QS.length - S.answered;
+      examSay(11); Audio_.whistle();
+      banner('PENS DOWN.', 'Pens down. Pens DOWN.', 3400);
+    }
+  }
+  else if (S.stage === 'done'){
+    if (press && S.breaches < 2){
+      S.breaches++; S.aura -= 4; logAura('Still writing after pens down', -4);
+      Audio_.whistle();
+      banner('PENS. DOWN.', 'He is walking over. He has the clipboard out.', 2600);
+    }
+    if (S.t >= EXAM_OVER && !S.done){ S.done = true; finishExam(); }
+  }
+  if (S.nagT > 0) S.nagT -= dt;
+  if (S.capT > 0) S.capT -= dt;
+
+  /* ---- the boys who finish early ---- */
+  for (let i=0;i<EXAM_LEAVE_AT.length;i++){
+    if (S.finished === i && S.t >= EXAM_LEAVE_AT[i]) examSpawnLeaver(S.leavers[i], i);
+  }
+  examWalkers(dt);
+
+  /* ---- panic ---- */
+  const rush = Math.max(0, 12 - (EXAM_PENS_DOWN - S.t)) / 12;
+  S.panic = clamp(S.finished*0.12 + rush*0.45, 0, 1);
+
+  /* ---- the clock, which is not on your side ---- */
+  const C = E.clock;
+  if (C.m){
+    const frac = Math.min(1, S.t / EXAM_OVER);
+    const mins = 15 + frac*50;
+    C.m.rotation.z = -(mins/60)*Math.PI*2;
+    C.h.rotation.z = -((14 + mins/60)/12)*Math.PI*2;
+    S.clockSpin = (S.clockSpin||0) + dt*(S.t > EXAM_PENS_DOWN-10 ? 3.4 : 1.0)*(Math.PI*2/1.36);
+    C.s.rotation.z = -S.clockSpin;
+  }
+  S.tickT -= dt;
+  if (S.tickT <= 0){ S.tickT = S.t > EXAM_PENS_DOWN-10 ? 0.30 : 0.62; Audio_.tick(0.5 + S.panic*0.9); }
+
+  /* ---- the cough and sniff symphony ---- */
+  S.coughT -= dt;
+  if (S.coughT <= 0){ S.coughT = rand(2.6, 6.5); Audio_.cough(); }
+
+  /* ---- the invigilator does his rounds ---- */
+  I.dwell -= dt;
+  if (I.dwell <= 0){
+    I.dwell = rand(2.4, 4.6);
+    I.tx = pick(EXAM_AISLE);
+    I.tz = rand(EXM.ZF+1.4, EXM.ZB-1.6);
+  }
+  const dx = I.tx-I.x, dz = I.tz-I.z, d = Math.hypot(dx,dz);
+  if (d > 0.05){
+    const st = Math.min(d, 0.62*dt);
+    I.x += (dx/d)*st; I.z += (dz/d)*st;
+    I.face = Math.atan2(dx, dz);
+    I.stepAcc += st;
+    if (I.stepAcc > 0.58){ I.stepAcc = 0;
+      Audio_.step(0.9/(1+Math.hypot(I.x-E.ME_X, I.z-E.ME_Z)*0.45)); }
+  }
+  E.invig.position.set(I.x, 0, I.z);
+  E.invig.rotation.y = I.face;
+  const near = Math.hypot(I.x-E.ME_X, I.z-E.ME_Z);
+  if (near < 1.15 && S.stage === 'writing'){
+    S.panic = Math.min(1, S.panic + 0.22);
+    if (!S.overT || S.t - S.overT > 16){ S.overT = S.t;
+      banner('HE IS READING YOUR ANSWER.', 'Over your shoulder. Slowly. He has all day.', 2600); }
+  }
+
+  E.draw();
+  spaceEdge = 0; clickEdge = false; eEdge = false; cookPressed = false; shovePressed = false;
+  for (const k in edges) delete edges[k];
+}
+
+function startExam(){
+  G.mode='exam'; G.started=true; G.phase='idle';
+  $('ui').style.display='none';
+  $('hallHud').classList.remove('hidden');
+  $('hallCapWrap').classList.remove('hidden');
+  sun.intensity = 0.42; hemi.intensity = 0.52;
+  ExamScene.reset();
+  showControlCue(CUE_EXAM, true, 'ANSWER'); clearInputEdges();
+  $('keyCue').classList.add('side');
+  $('hallCapWrap').classList.add('hi');
+  setSceneTitle('The Exam');
+  $('hallHint').classList.add('hidden');
+}
+function finishExam(){
+  const S = ExamScene.S;
+  S.blanks = EXAM_QS.length - S.answered;
+  if (S.right >= 5){ S.aura += 6; logAura('Five marked correct', 6); }
+  if (S.answered === 0){
+    S.aura -= 10; logAura('Handed in a completely blank paper', -10);
+  } else if (S.answered >= 10){
+    S.aura += 8; logAura('Attempted double figures', 8);
+  }
+  if (S.finished >= 5 && S.answered < 6)
+    logAura('Watched the room empty around you', -3), S.aura -= 3;
+  const earned = Math.round(S.aura);
+  const carried = G.auraBank || 0;
+  fadeTo(()=>{
+    ExamScene.group.visible = false;
+    $('hallHud').classList.add('hidden');
+    $('hallCapWrap').classList.add('hidden');
+    $('hallCapWrap').classList.remove('hi');
+    $('keyCue').classList.remove('side');
+    $('hallHint').classList.add('hidden');
+    $('ui').style.display='';
+    $('vig').style.opacity = 0;
+    sun.intensity = 1.05; hemi.intensity = 0.75;
+    G.mode='bay';
+    resetGame();
+    showControlCue(CUE_SCRUM, true); clearInputEdges();
+    setSceneTitle('3:10pm');
+    G.auraBank = carried + earned; G.auraExam = earned;
+  });
 }
 
 const buses = [makeBus(), makeBus()];
@@ -5136,8 +6047,10 @@ const Audio_ = (function(){
     crowdGain=ctx.createGain(); crowdGain.gain.value=0;
     cs.connect(cf); cf.connect(crowdGain); crowdGain.connect(master); cs.start();
   }
+  function resume(){ if (ctx && ctx.state !== 'running' && ctx.resume) ctx.resume(); }
   function burst(freq,q,dur,vol,type){
     if(!ctx||muted) return;
+    resume();
     const s=ctx.createBufferSource(); s.buffer=noiseBuf;
     const f=ctx.createBiquadFilter(); f.type=type||'bandpass'; f.frequency.value=freq; f.Q.value=q;
     const g=ctx.createGain(); g.gain.setValueAtTime(vol,ctx.currentTime);
@@ -5150,6 +6063,67 @@ const Audio_ = (function(){
     const g=ctx.createGain(); g.gain.setValueAtTime(vol,ctx.currentTime);
     g.gain.exponentialRampToValueAtTime(0.0001, ctx.currentTime+dur);
     o.connect(g); g.connect(master); o.start(); o.stop(ctx.currentTime+dur);
+  }
+  /* ---- a voice ------------------------------------------------------------
+     No samples in a single-file game, so the headmaster is synthesised: one
+     short vowel per syllable, a sawtooth at his fundamental run through a
+     formant band, drifting down as the sentence ends.  Deep enough to carry a
+     hall, not so deep it turns into a foghorn. */
+  function syllables(t){
+    const m = String(t).toLowerCase().replace(/[^a-z ]/g,' ').match(/[aeiouy]+/g);
+    return m ? Math.max(2, Math.min(26, m.length)) : 3;
+  }
+  /* Nobody speaks out loud any more — the captions carry the lines on their own.
+     Flip VOICE_ON back to true to bring the synthesised staff voices back. */
+  const VOICE_ON = false;
+  let voiceTok = 0;
+  function voice(text, f0, dur, shout){
+    if (!VOICE_ON) return;
+    if (!ctx || muted || !text) return;
+    resume();
+    const tok = ++voiceTok;
+    const n = syllables(text);
+    const span = Math.max(0.7, Math.min((dur||3.0)*0.80, n*0.152));
+    const step = span / n;
+    const vol = shout ? 0.30 : 0.24;
+    for (let i=0;i<n;i++){
+      setTimeout(()=>{
+        if (tok !== voiceTok || muted || !ctx) return;
+        const k = n>1 ? i/(n-1) : 0;
+        const f = f0 * (1 - 0.13*k) * (0.96 + Math.random()*0.10) * (shout?1.12:1);
+        const d = step*0.74, t0 = ctx.currentTime;
+        const o = ctx.createOscillator(); o.type='sawtooth';
+        o.frequency.setValueAtTime(f, t0);
+        o.frequency.linearRampToValueAtTime(f*0.97, t0+d);
+        // the body of the voice — kept wide, because a deep fundamental alone is
+        // inaudible on a laptop speaker.  It is the harmonics you actually hear.
+        const body = ctx.createBiquadFilter(); body.type='lowpass';
+        body.frequency.value = shout ? 2600 : 2000; body.Q.value = 0.5;
+        const f1 = ctx.createBiquadFilter(); f1.type='bandpass';      // first vowel formant
+        f1.frequency.value = 420 + Math.random()*280; f1.Q.value = 2.2;
+        const f2 = ctx.createBiquadFilter(); f2.type='bandpass';      // second, for intelligibility
+        f2.frequency.value = 1100 + Math.random()*520; f2.Q.value = 2.6;
+        const gb = ctx.createGain(); gb.gain.value = 0.55;
+        const g1 = ctx.createGain(); g1.gain.value = 1.00;
+        const g2 = ctx.createGain(); g2.gain.value = 0.45;
+        const g = ctx.createGain();
+        g.gain.setValueAtTime(0.0001, t0);
+        g.gain.exponentialRampToValueAtTime(vol, t0+0.022);
+        g.gain.exponentialRampToValueAtTime(vol*0.60, t0+d*0.62);
+        g.gain.exponentialRampToValueAtTime(0.0001, t0+d);
+        o.connect(body); body.connect(gb); gb.connect(g);
+        o.connect(f1);   f1.connect(g1);   g1.connect(g);
+        o.connect(f2);   f2.connect(g2);   g2.connect(g);
+        g.connect(master);
+        o.start(); o.stop(t0+d+0.02);
+      }, i*step*1000);
+    }
+  }
+  function oneClap(v){
+    const g0 = (v==null?1:v);
+    burst(2100+rand(-380,460), 0.55, 0.048, 0.34*g0, 'bandpass');   // the crack
+    burst(950+rand(-140,180),  0.80, 0.062, 0.26*g0, 'bandpass');   // the body of the hands
+    burst(300, 0.9, 0.040, 0.14*g0, 'lowpass');                     // the thump
   }
   return {
     init, 
@@ -5176,6 +6150,38 @@ const Audio_ = (function(){
              burst(rand(105,165),1.1,0.11,0.115*g,'lowpass');
              setTimeout(()=>burst(rand(1900,2700),0.9,0.045,0.030*g,'highpass'), 14); },
     bell(){ tone(1320,0.5,0.10,'sine'); setTimeout(()=>tone(990,0.7,0.09,'sine'),160); },
+    voice, shutUp(){ voiceTok++; }, resume,
+    tick(v){ if(!ctx||muted) return; tone(2100, 0.018, 0.030*(v==null?1:v), 'square');
+             burst(4200, 1.2, 0.012, 0.020*(v==null?1:v), 'highpass'); },
+    pen(){ if(!ctx||muted) return; burst(2600+rand(-300,300), 1.4, 0.075, 0.055, 'highpass');
+           setTimeout(()=>burst(3100, 1.1, 0.05, 0.035, 'highpass'), 60); },
+    scrape(){ if(!ctx||muted) return; burst(520, 0.6, 0.34, 0.13, 'bandpass');
+              setTimeout(()=>burst(340, 0.7, 0.22, 0.09, 'bandpass'), 120); },
+    cough(){ if(!ctx||muted) return; const v = rand(0.35,0.8);
+             if (Math.random()<0.45){ burst(1500, 0.9, 0.22, 0.05*v, 'highpass'); return; }   // a sniff
+             burst(360+rand(-90,140), 1.5, 0.09, 0.10*v, 'bandpass');
+             setTimeout(()=>burst(820, 1.0, 0.11, 0.06*v, 'bandpass'), 95); },
+    paperFlip(){ if(!ctx||muted) return; burst(3000, 0.7, 0.16, 0.10, 'highpass');
+                 setTimeout(()=>burst(2200, 0.8, 0.13, 0.075, 'highpass'), 110); },
+    clap(v){ if(!ctx||muted) return; resume(); oneClap(v); },
+    // the whole hall going at once: a wash of hands with individual claps on top
+    applause(dur, size){
+      if(!ctx||muted) return;
+      const T = dur||4.0, k = size==null?1:size, t0 = ctx.currentTime;
+      resume();
+      const src=ctx.createBufferSource(); src.buffer=noiseBuf; src.loop=true;
+      const f=ctx.createBiquadFilter(); f.type='bandpass'; f.frequency.value=1850; f.Q.value=0.5;
+      const g=ctx.createGain();
+      g.gain.setValueAtTime(0.0001, t0);
+      g.gain.exponentialRampToValueAtTime(0.26*k, t0+0.30);
+      g.gain.setValueAtTime(0.26*k, t0+T*0.60);
+      g.gain.exponentialRampToValueAtTime(0.0001, t0+T);
+      src.connect(f); f.connect(g); g.connect(master);
+      src.start(); src.stop(t0+T+0.05);
+      const n = Math.round(T*14*k);
+      for (let i=0;i<n;i++)
+        setTimeout(()=>{ if(!muted&&ctx) oneClap(rand(0.30,0.85)); }, rand(40, T*820));
+    },
     toggle(){ muted=!muted; if(muted&&ctx){engineGain.gain.value=0;crowdGain.gain.value=0;} return muted; }
   };
 })();
@@ -5539,6 +6545,7 @@ function showControlCue(items, low, title){
 function hideControlCue(){ const c=$('keyCue'); if (c) c.classList.add('hidden'); }
 const CUE_SCRUM = [['SPACE','Push'],['CTRL','Brace'],['F','Cook','cueCook'],['SHIFT','Run']];
 const CUE_GDA   = [['E','Switch tabs'],['SPACE','Jump']];
+const CUE_EXAM  = [['1','A'],['2','B'],['3','C'],['4','D']];
 
 function banner(txt, sub, ms){
   const b=$('banner');
@@ -5557,9 +6564,11 @@ function startRound(){
   G.bus = G.isDouble ? dblBus : buses[G.busIdx];
   G.targetBay = BAYS[rint(0,2)];
   G.doorX = G.targetBay + DOOR_LX;
-  G.spacesMax = G.spaces = [13,18,24,30][Math.min(G.round-1,3)] + (G.isDouble ? 12 : 0);
+  // a normal bus takes 20, the NX2 takes 30.  The seats are unchanged — 10 of them on a
+  // normal bus, 22 on the NX2 — so everyone after that is standing room.
+  G.spacesMax = G.spaces = G.isDouble ? BUS_CAP_DOUBLE : BUS_CAP_SINGLE;
   G.boarded = 0; G.boardCD=0; G.doorT=0; G.boardTimer=0;
-  G.rideSkip=false; G.tier=null; G.ridePose=null;
+  G.rideSkip=false; G.tier=null; G.ridePose=null; G.auraSealed=false;
   G.busX = -95; G.busV = 13.2;
   G.route = G.isDouble ? null : pickSchoolRoute();
   if (G.bus.setRoute && G.route) G.bus.setRoute(G.route);
@@ -5628,11 +6637,11 @@ function departBus(){
   scatterCrowd();
 }
 
-function endGame(){
-  G.phase='over';
-  hideControlCue();
-  setSceneTitle('');
-  document.exitPointerLock && document.exitPointerLock();
+/* The day's total has to be sealed before anything can react to it — the finale needs
+   to know the number, and the score card needs to show the same one. */
+function sealAura(){
+  if (G.auraSealed) return G.aura;
+  G.auraSealed = true;
   const au = computeAura();
   const ord = n => n+(n===1?'st':n===2?'nd':n===3?'rd':'th');
   logAura('Caught bus #'+G.round+(G.isDouble ? ' \u2014 the NX2' : (G.route? ' \u2014 School Bus '+G.route.n : '')), au.bus);
@@ -5642,6 +6651,12 @@ function endGame(){
   if (au.mult>1) logAuraMult('Front row, top deck of the NX2', au.mult);
   if ((G.auraMult||1) > 1)
     logAuraMult('Pork steam bun \u2014 '+(G.lunchPos||1)+(G.lunchPos===1?'st':G.lunchPos===2?'nd':G.lunchPos===3?'rd':'th')+' at the counter', G.auraMult);
+  G.aura = auraTotal();
+  return G.aura;
+}
+function showResult(){
+  sealAura();
+  // anything you did after the bus — cooking Mr Fordham on stage, say — still counts
   const total = auraTotal();
   G.aura = total;
   $('rAura').textContent = total;
@@ -5664,6 +6679,13 @@ function endGame(){
   $('rGrade').className = 'grade ' + g.cls;
   $('resultOver').classList.remove('hidden');
 }
+function endGame(){
+  G.phase='over';
+  hideControlCue();
+  setSceneTitle('');
+  document.exitPointerLock && document.exitPointerLock();
+  showResult();
+}
 
 /* ============================================================
    9.  PLAYER INPUT
@@ -5679,10 +6701,14 @@ addEventListener('keydown', e=>{
   if (e.code==='KeyE') eEdge = true;
   if (e.code==='KeyQ') qEdge = true;
   if (/^Key[A-Z]$/.test(e.code) || e.code==='Space') edges[e.code] = (edges[e.code]||0)+1;
+  if (/^(Digit|Numpad)[1-4]$/.test(e.code)) edges[e.code] = (edges[e.code]||0)+1;
   if (e.code==='Space') spaceEdge++;
   if (e.code==='KeyE' && G.playerBoarded && G.started && G.mode==='bay' && G.phase!=='over'){
     G.rideSkip = true;
-    endGame();                       // straight away — do not wait for the bus to leave
+    const total = sealAura();
+    if (total >= FIN_GOOD)     startFinale('good', total);
+    else if (total <= FIN_BAD) startFinale('bad',  total);
+    else endGame();                  // straight away — do not wait for the bus to leave
   }
   if (e.code==='KeyM'){ const m=Audio_.toggle(); banner(m?'MUTED':'SOUND ON','',900); }
   /* ---- 0 = skip the current class (testing) ---- */
@@ -5701,6 +6727,10 @@ function skipClass(){
     Lunch.S.done = true;
     banner('SKIPPED.', 'Lunch — testing', 1400);
     finishLunch();
+  } else if (G.mode==='exam' && !ExamScene.S.done){
+    ExamScene.S.done = true;
+    banner('SKIPPED.', 'The Exam \u2014 testing', 1400);
+    finishExam();
   } else if (G.mode==='gda' && !GDAScene.S.done){
     GDAScene.S.done = true;
     banner('SKIPPED.', 'Game Dev — testing', 1400);
@@ -6292,6 +7322,26 @@ function updateCamera(dt){
     armGroup.visible = false;
     return;
   }
+  if (G.mode==='finale'){
+    camera.position.set(FIN.px, HALL_Y + (FIN.fly ? FIN.py : HALL.STAGE_Y + 1.62), FIN.pz);
+    camera.rotation.set(pitch + camShakeY, yaw + camShakeX, FIN.roll || 0, 'YXZ');
+    if (skyDome) skyDome.position.set(camera.position.x, HALL_Y, camera.position.z);
+    sun.position.set(camera.position.x-20, HALL_Y+34, camera.position.z-20);
+    sun.target.position.set(camera.position.x, HALL_Y, camera.position.z);
+    sun.target.updateMatrixWorld();
+    armGroup.visible = false;
+    return;
+  }
+  if (G.mode==='exam'){
+    camera.position.set(ExamScene.ME_X, EXAM_Y + 1.14, ExamScene.ME_Z + 0.10);
+    camera.rotation.set(pitch + camShakeY, yaw + camShakeX, 0, 'YXZ');
+    if (skyDome) skyDome.position.set(camera.position.x, EXAM_Y, camera.position.z);
+    sun.position.set(camera.position.x-24, EXAM_Y+30, camera.position.z-18);
+    sun.target.position.set(camera.position.x, EXAM_Y, camera.position.z);
+    sun.target.updateMatrixWorld();
+    armGroup.visible = false;
+    return;
+  }
   if (G.mode==='lunch'){
     const S = Lunch.S;
     if (S.det > 0){
@@ -6485,6 +7535,33 @@ function updateHUD(){
     return;
   }
   $('hudLeft').style.display=''; $('hudRight').style.display='';
+  if (G.mode==='finale'){
+    const S = Hall.S;
+    $('hallPhase').textContent = FIN.kind==='good' ? 'Special mention' : 'Called to the front';
+    $('hallAura').textContent = FIN.total + ' aura for the day';
+    $('hallHud').querySelector('.lbl').textContent = 'The whole school is watching';
+    const w = $('hallCapWrap');
+    if (S.capT > 0){ w.style.opacity = 1; $('hallWho').textContent = S.capWho; $('hallCap').textContent = S.cap; }
+    else if (!FIN.greyed) w.style.opacity = 0;
+    return;
+  }
+  if (G.mode==='exam'){
+    const S = ExamScene.S;
+    $('hallPhase').textContent =
+      S.stage==='cover' ? 'Do not turn over' :
+      S.stage==='reading' ? 'READING TIME \u2014 PENS DOWN' :
+      S.stage==='done' ? 'PENS DOWN' : 'Question ' + (S.qi+1) + ' of ' + examTotal(S);
+    $('hallAura').textContent = Math.round(S.aura) + ' aura \u00b7 '
+      + Math.max(0, Math.ceil(EXAM_PENS_DOWN - S.t)) + 's left \u00b7 '
+      + (S.right||0) + '/' + S.answered + ' right \u00b7 ' + S.finished + ' gone';
+    $('hallHud').querySelector('.lbl').textContent =
+      S.stage==='done' ? 'Papers to the front' : 'Practice Examination';
+    const w = $('hallCapWrap');
+    if (S.capT > 0){ w.style.opacity = 1; $('hallWho').textContent = S.capWho; $('hallCap').textContent = S.cap; }
+    else w.style.opacity = 0;
+    $('vig').style.opacity = (S.panic*0.42).toFixed(3);
+    return;
+  }
   if (G.mode==='gda'){
     const S = GDAScene.S;
     $('hallPhase').textContent = S.screen==='dino' ? 'DINOSAUR' : 'Documentation';
@@ -6571,6 +7648,268 @@ function updateHUD(){
   } else arrow.style.opacity=0;
 }
 
+
+/* ============================================================
+   12b.  THE FINALE  —  an extraordinary day gets called to the front
+   ============================================================ */
+const FIN_GOOD = 150, FIN_BAD = -100;
+const FIN = {
+  kind:'good', total:0, t:0, step:-1, active:false,
+  px:0, pz:HALL.ZF-1.6, vx:0, vz:0,
+  X0:-6.2, X1:6.2, Z0:HALL.ZF-7.2, Z1:HALL.ZF-0.55,
+  cooked:null, cookUsed:false, headWalk:false, greyed:false, lines:[]
+};
+function finTop(n, worst){
+  const out = [];
+  for (const e of AURA_LOG){
+    if (e.mult !== undefined) continue;
+    const v = e.amt || 0;              // logAura already sums repeats into amt
+    if (!v) continue;
+    out.push({ label:e.label, v, n:e.n||1 });
+  }
+  out.sort((a,b)=> worst ? a.v-b.v : b.v-a.v);
+  return out.slice(0, n);
+}
+function finScript(kind, total){
+  const L = [];
+  const put = (t, who, line, hold) => L.push({t, who, line, hold:hold||3.2});
+  put(0.9, 'MR FORDHAM', 'Could I have this boy on the stage, please.', 3.0);
+  put(4.0, 'MR FORDHAM', 'This person got a staggering ' + total + ' aura in this game.', 3.6);
+  let t = 7.8;
+  const top = finTop(3, kind === 'bad');
+  if (!top.length) put(t, 'MR FORDHAM', 'He did almost nothing at all. Somehow that was enough.', 3.4), t += 3.6;
+  for (const r of top){
+    const amt = (r.v > 0 ? '+' : '') + r.v;
+    put(t, 'MR FORDHAM', '“' + r.label + (r.n>1 ? ', ' + r.n + ' times' : '') + '.” That was ' + amt + ' on its own.', 3.3);
+    t += 3.5;
+  }
+  const mult = AURA_LOG.filter(e => e.mult !== undefined && e.mult > 1);
+  if (kind === 'good' && mult.length){
+    put(t, 'MR FORDHAM', 'And then he multiplied the lot. ' + mult[0].label + '.', 3.3); t += 3.5;
+  }
+  if (kind === 'good'){
+    put(t, 'MR FORDHAM', 'That is an AWESOME score. You get the scholarship tie.', 3.8); t += 4.0;
+    put(t, 'MR FORDHAM', 'You serve as the absolute best role model for the school. Congratulations.', 4.4);
+    L.tie = t + 0.4; t += 4.8;
+  } else {
+    put(t, 'MR FORDHAM', 'THAT IS AWFUL. You are EXPELLED.', 3.6);
+    L.walk = t + 1.4; t += 5.4;
+  }
+  L.end = t + 1.6;
+  return L;
+}
+function startFinale(kind, total){
+  G.mode = 'finale'; G.phase = 'over';
+  FIN.kind = kind; FIN.total = total; FIN.t = 0; FIN.step = 0; FIN.active = true;
+  FIN.cooked = null; FIN.cookUsed = false; FIN.headWalk = false; FIN.greyed = false;
+  FIN.cookedShown = false; FIN.tieDone = false; FIN.endAt = 0; FIN.stepAcc = 0;
+  FIN.px = -2.0; FIN.pz = HALL.ZF - 1.30; FIN.py = HALL.STAGE_Y + 1.62;
+  FIN.vx = 0; FIN.vz = 0; FIN.vy = 0; FIN.roll = 0; FIN.fly = null; FIN.hit = 0;
+  FIN.lines = finScript(kind, total);
+  document.exitPointerLock && document.exitPointerLock();
+  fadeTo(()=>{
+    renderer.domElement.requestPointerLock();
+    $('ui').style.display = 'none';
+    $('hallHud').classList.remove('hidden');
+    $('hallCapWrap').classList.remove('hidden');
+    $('hallCapWrap').classList.add('hi');
+    $('vig').style.opacity = 0;
+    $('cookedOver').classList.add('hidden');
+    renderer.domElement.style.filter = '';
+    sun.intensity = 0.34; hemi.intensity = 0.34;
+    for (const b of fleet) b.group.position.set(-400, 0, BUS_Z);
+    Hall.reset();
+    Hall.setCurtain(1);
+    const S = Hall.S;
+    S.phase = 'finale'; S.done = true; S.cap = ''; S.capT = 0;
+    // the whole school, sat down and looking at you
+    const free = Hall.seats.filter(s => !s.taken);
+    Hall.crowd.forEach((a, i) => {
+      const st = free[i];
+      if (!st){ a.mesh.visible = false; return; }
+      st.taken = true; a.seat = st; a.seated = true; a.leaving = false;
+      a.mesh.geometry = a.sitGeo;
+      a.mesh.position.set(st.x, 0.47, st.z);
+      a.mesh.rotation.set(0, Math.PI, 0);
+      a.mesh.visible = true;
+    });
+    Hall.setStaticStanding(false);
+    // Mr Fordham at the lectern, the headmaster waiting in the wings
+    Hall.head.visible = true;
+    Hall.head.position.set(0, HALL.STAGE_Y, HALL.ZF - 2.78);      // the headmaster, at the lectern
+    Hall.head.rotation.y = Math.PI;                                // addressing the hall
+    Hall.deputy.visible = true;                                    // the deputy stands off to one side
+    Hall.deputy.position.set(4.9, HALL.STAGE_Y, HALL.ZF - 3.15);
+    Hall.deputy.rotation.y = Math.PI - 0.30;
+    yaw = Math.PI; pitch = -0.06;
+    showControlCue([['WASD','Move'],['F','Cook']], true, 'ON STAGE');
+    clearInputEdges();
+    setSceneTitle(kind === 'good' ? 'Special Assembly' : 'Special Assembly');
+    banner(kind === 'good' ? 'ON STAGE.' : 'ON STAGE.',
+      'Mr Fordham would like a word with the whole school listening.', 4200);
+  });
+}
+function finCookTarget(){
+  const cands = [
+    { m:Hall.head,   who:'MR FORDHAM' },
+    { m:Hall.deputy, who:'THE DEPUTY' }
+  ];
+  for (const b of Hall.stageBoys || []) cands.push({ m:b, who:'A PREFECT' });
+  for (const b of Hall.prefects  || []) cands.push({ m:b, who:'A PREFECT' });
+  const fx = -Math.sin(yaw), fz = -Math.cos(yaw);
+  let best = null, bs = 0.45;
+  for (const c of cands){
+    if (!c.m || !c.m.visible) continue;
+    const dx = c.m.position.x - FIN.px, dz = c.m.position.z - FIN.pz;
+    const d = Math.hypot(dx, dz);
+    if (d > 4.2 || d < 0.001) continue;
+    const dot = (dx/d)*fx + (dz/d)*fz;
+    if (dot > bs){ bs = dot; best = c; }
+  }
+  return best;
+}
+function updateFinale(dt){
+  const S = Hall.S;
+  FIN.t += dt;
+  /* ---- once he connects, you are not walking anywhere ---- */
+  if (FIN.fly){
+    const f = FIN.fly;
+    f.vy -= 20*dt;
+    FIN.px += f.vx*dt; FIN.py += f.vy*dt; FIN.pz += f.vz*dt;
+    yaw   += f.ay*dt;
+    pitch += f.ax*dt;
+    FIN.roll = (FIN.roll||0) + f.az*dt;
+    const FLOOR = 0.42;                                   // eye height, face down on the carpet
+    if (FIN.py <= FLOOR){
+      FIN.py = FLOOR;
+      if (f.vy < -2.2){ f.vy = -f.vy*0.30; f.vx*=0.6; f.vz*=0.6;
+                        f.ax*=0.5; f.ay*=0.5; f.az*=0.5; Audio_.bump(); camShakeY += 0.06; }
+      else { f.vy = 0; f.vx*=0.76; f.vz*=0.76; f.ax*=0.5; f.ay*=0.5; f.az*=0.5;
+             if (Math.hypot(f.vx,f.vz) < 0.5){ f.ax=f.ay=f.az=0;
+               pitch = lerp(pitch, -0.9, Math.min(1,dt*4)); FIN.roll = lerp(FIN.roll, 1.35, Math.min(1,dt*4)); } }
+    }
+    FIN.px = clamp(FIN.px, -HALL.W+0.6, HALL.W-0.6);
+    FIN.pz = clamp(FIN.pz, HALL.ZF-7.2, HALL.ZB-1.0);
+    if (FIN.hit && FIN.t - FIN.hit > 0.85 && !FIN.cookedShown){
+      FIN.cookedShown = true;
+      $('cookedOver').classList.remove('hidden');
+    }
+    E_finaleTail(dt);
+    return;
+  }
+  /* ---- you can walk about up here. Everyone is watching. ---- */
+  const fx = -Math.sin(yaw), fz = -Math.cos(yaw);
+  const rx =  Math.cos(yaw), rz = -Math.sin(yaw);
+  let mx = 0, mz = 0;
+  if (keys['KeyW']||keys['ArrowUp'])   { mx+=fx; mz+=fz; }
+  if (keys['KeyS']||keys['ArrowDown']) { mx-=fx; mz-=fz; }
+  if (keys['KeyD']||keys['ArrowRight']){ mx+=rx; mz+=rz; }
+  if (keys['KeyA']||keys['ArrowLeft']) { mx-=rx; mz-=rz; }
+  const ml = Math.hypot(mx, mz);
+  const spd = (keys['ShiftLeft']||keys['ShiftRight']) ? 4.0 : 2.4;
+  if (ml > 0.01){ FIN.vx += ((mx/ml)*spd - FIN.vx)*10*dt; FIN.vz += ((mz/ml)*spd - FIN.vz)*10*dt; }
+  else { FIN.vx -= FIN.vx*9*dt; FIN.vz -= FIN.vz*9*dt; }
+  FIN.px = clamp(FIN.px + FIN.vx*dt, FIN.X0, FIN.X1);
+  FIN.pz = clamp(FIN.pz + FIN.vz*dt, FIN.Z0, FIN.Z1);
+
+  /* ---- and you can still cook somebody, in front of the entire school ---- */
+  if (cookPressed && !FIN.cookUsed){
+    cookPressed = false;
+    const t = finCookTarget();
+    if (t){
+      FIN.cookUsed = true;
+      FIN.cooked = { m:t.m, t:0, who:t.who };
+      Audio_.cook();
+      camShakeX += rand(-0.05,0.05); camShakeY += 0.05;
+      logAura('Cooked ' + (t.who === 'MR FORDHAM' ? 'the headmaster on stage' :
+                           t.who === 'THE DEPUTY'  ? 'the deputy on stage' :
+                           'a prefect on stage') + ' in front of the whole school', -12);
+      banner('IN FRONT OF EVERYONE.', 'Nine hundred boys just saw you do that. −12 aura.', 3200);
+    }
+  }
+  cookPressed = false;
+  if (FIN.cooked){
+    const c = FIN.cooked; c.t += dt;
+    const k = c.t < 0.28 ? c.t/0.28 : (c.t < 2.1 ? 1 : Math.max(0, 1-(c.t-2.1)/0.55));
+    c.m.rotation.x = -1.45*k;
+    c.m.position.y = HALL.STAGE_Y - 0.55*k;
+    if (c.t > 2.75){
+      c.m.rotation.x = 0; c.m.position.y = HALL.STAGE_Y; FIN.cooked = null;
+      Hall.say(c.who, c.who === 'THE DEPUTY' ? 'Sit down. Sit DOWN.'
+        : (FIN.headWalk ? 'That will not help you.' : '… as I was saying.'), 2.6);
+    }
+  }
+
+  /* ---- the script ---- */
+  const L = FIN.lines;
+  while (FIN.step < L.length && FIN.t >= L[FIN.step].t){
+    const ln = L[FIN.step];
+    if (!FIN.cooked || ln.who !== 'MR FORDHAM') Hall.say(ln.who, ln.line, ln.hold);
+    FIN.step++;
+  }
+  if (S.capT > 0) S.capT -= dt;
+
+  if (FIN.kind === 'good' && L.tie && FIN.t >= L.tie && !FIN.tieDone){
+    FIN.tieDone = true;
+    Hall.setStaticStanding(true);
+    Audio_.applause(6.0, 1.25);
+    for (const a of Hall.crowd) if (a.mesh && a.seated){ a.mesh.geometry = a.standGeo; a.mesh.position.y = 0; }
+    $('tieOver').classList.remove('hidden');
+    banner('SCHOLARSHIP TIE.', 'The whole school is on its feet.', 4200);
+  }
+  if (FIN.kind === 'bad' && L.walk && FIN.t >= L.walk) FIN.headWalk = true;
+  if (FIN.headWalk && !FIN.greyed && !FIN.cooked){
+    const h = Hall.head.position;
+    const dx = FIN.px - h.x, dz = (FIN.pz + 1.05) - h.z, d = Math.hypot(dx, dz);
+    if (d > 0.05){
+      const st = Math.min(d, 1.55*dt);
+      h.x += (dx/d)*st; h.z += (dz/d)*st;
+      Hall.head.rotation.y = Math.atan2(dx, dz);
+      FIN.stepAcc = (FIN.stepAcc||0) + st;
+      if (FIN.stepAcc > 0.55){ FIN.stepAcc = 0; Audio_.step(1.5/(1+d*0.4)); }
+    }
+    if (d < 1.15){
+      FIN.greyed = true; FIN.hit = FIN.t;
+      Audio_.cook(); Audio_.sting();
+      camShakeX += 0.12; camShakeY += 0.10;
+      renderer.domElement.style.filter = 'grayscale(1) contrast(1.15) brightness(0.72)';
+      $('hallCapWrap').style.opacity = 0;
+      hideControlCue();
+      // straight off the front of the stage, same boot the vaper gets
+      const ax = FIN.px - h.x, az = FIN.pz - h.z, al = Math.hypot(ax,az) || 1;
+      const POW = 9.5;
+      FIN.fly = { vx:(ax/al)*POW*0.55 + rand(-1.2,1.2),
+                  vy: POW*0.80 + rand(0.4,1.2),
+                  vz: Math.max(7.6, (az/al)*POW) + rand(0,1.8),
+                  ax: rand(4.5,8.5)*(Math.random()<0.5?-1:1),
+                  ay: rand(2.0,4.5)*(Math.random()<0.5?-1:1),
+                  az: rand(6.0,10.5)*(Math.random()<0.5?-1:1) };
+      FIN.endAt = FIN.t + 4.2;
+    }
+  }
+  E_finaleTail(0);
+}
+function E_finaleTail(dt){
+  const L = FIN.lines;
+  const done = FIN.greyed ? (FIN.endAt && FIN.t >= FIN.endAt) : (FIN.t >= L.end);
+  if (done && FIN.active){
+    FIN.active = false;
+    fadeTo(()=>{
+      Hall.group.visible = false;
+      renderer.domElement.style.filter = '';
+      $('cookedOver').classList.add('hidden');
+      $('tieOver').classList.add('hidden');
+      $('hallHud').classList.add('hidden');
+      $('hallCapWrap').classList.add('hidden');
+      $('hallCapWrap').classList.remove('hi');
+      $('hallCapWrap').style.opacity = '';
+      $('ui').style.display = '';
+      hideControlCue();
+      endGame();
+    });
+  }
+}
+
 /* ============================================================
    13.  MAIN LOOP
    ============================================================ */
@@ -6588,6 +7927,12 @@ function loop(now){
   } else if (G.started && G.mode==='gda'){
     G.total += dt;
     updateGDA(dt);
+  } else if (G.started && G.mode==='exam'){
+    G.total += dt;
+    updateExam(dt);
+  } else if (G.started && G.mode==='finale'){
+    G.total += dt;
+    updateFinale(dt);
   } else if (G.started && G.phase!=='over'){
     G.total += dt;
     simulate(dt);
@@ -6702,14 +8047,9 @@ function finishGDA(){
     GDAScene.group.visible=false;
     $('hallHud').classList.add('hidden');
     $('hallHint').classList.add('hidden');
-    $('ui').style.display='';
-    sun.intensity = 1.05; hemi.intensity = 0.75;
-    G.mode='bay';
-    resetGame();
-    showControlCue(CUE_SCRUM, true); clearInputEdges();
-    setSceneTitle('3:10pm');
+    $('jumpFx').classList.add('hidden');
     G.auraBank = carried + earned; G.auraGDA = earned;
-
+    startExam();
   });
 }
 function resetGame(){
@@ -6743,8 +8083,23 @@ function resetGame(){
   startRound();
   G.started=true;
 }
+/* A touchscreen with no fine pointer is a phone or a tablet.  A laptop with a
+   touchscreen still reports a fine pointer, so it is not caught by this. */
+const TOUCH_ONLY = (navigator.maxTouchPoints > 0 || 'ontouchstart' in window)
+                && !(window.matchMedia && window.matchMedia('(pointer: fine)').matches);
+if (TOUCH_ONLY){
+  $('startOver').style.display = 'none';      // inline, so nothing can put it back
+  $('resultOver').style.display = 'none';
+  $('ui').style.display = 'none';
+  $('mobileOver').classList.remove('hidden');
+  $('startBtn').onclick = null;
+}
+// browsers park the audio context until the page has been interacted with
+for (const ev of ['pointerdown','keydown']) addEventListener(ev, ()=>Audio_.resume(), {passive:true});
+
 $('startBtn').onclick = ()=>{
   Audio_.init();
+  Audio_.resume();
   $('startOver').classList.add('hidden');
   $('ui').style.display='';
   renderer.domElement.requestPointerLock();
@@ -6758,7 +8113,7 @@ addEventListener('resize', ()=>{
   renderer.setSize(innerWidth,innerHeight);
 });
 
-window.__BBB = { G, camera, buses, agents, scene, renderer,
+window.__BBB = { G, camera, buses, agents, scene, renderer, Audio_,
   get player(){ return player; },
   jumpToBay(){ G.busX = G.targetBay; G.busV = 0; G.phase='arrive'; for(const a of agents) a.committed=true; },
   look(y,p){ yaw=y; pitch=p; },
@@ -6780,7 +8135,7 @@ window.__BBB = { G, camera, buses, agents, scene, renderer,
                     inLine:G.inLine, qpos:G.playerQPos, qrank: player? player.qrank : null,
                     slot: G.playerQPos!==undefined? [+queueSlot(G.playerQPos).x.toFixed(1), +queueSlot(G.playerQPos).z.toFixed(2)] : null }; },
   forceTeacher(){ if(!G.teacher){ G.teacherBay = BAYS[1]; spawnTeacher(G.teacherBay); } },
-  forceDouble(){ G.isDouble=true; G.bus=dblBus; G.bus.clearFront(); G.spacesMax=G.spaces=25;
+  forceDouble(){ G.isDouble=true; G.bus=dblBus; G.bus.clearFront(); G.spacesMax=G.spaces=BUS_CAP_DOUBLE;
                  G.bus.releaseSeats(); G.bus.setBoarded(0); G.bus.group.position.set(G.busX,0,BUS_Z);
                  for (const b of fleet) if (b!==G.bus) b.group.position.set(-250,0,BUS_Z); },
   detent(){ return {ejecting:+G.ejecting.toFixed(2), inDet:G.inDetention, t:+G.detention.toFixed(1),
@@ -6795,6 +8150,22 @@ window.__BBB = { G, camera, buses, agents, scene, renderer,
   hallKey(code){ edges[code] = (edges[code]||0)+1; },
   hallKeys(){ return {stand:Hall.S.standKey, clap:Hall.S.clapKey, sl:Hall.S.standL, cl:Hall.S.clapL}; },
   GDAScene, GDA, GDA_Y, startGDA(){ startGDA(); }, skipClass(){ skipClass(); },
+  ExamScene, EXM, EXAM_Y, EXAM_QS, EXAM_PENS_DOWN, EXAM_OVER, EXAM_READ_END,
+  FIN, FIN_GOOD, FIN_BAD, sealAura(){ return sealAura(); },
+  startFinale(k,t){ startFinale(k,t); },
+  finStep(dt){ G.total+=dt; updateFinale(dt); updateCamera(dt); },
+  finInfo(){ return { kind:FIN.kind, total:FIN.total, t:+FIN.t.toFixed(1), step:FIN.step,
+    lines:FIN.lines.length, cooked:!!FIN.cooked, cookUsed:FIN.cookUsed, grey:FIN.greyed,
+    tie:!!FIN.tieDone, active:FIN.active, px:+FIN.px.toFixed(2), pz:+FIN.pz.toFixed(2),
+    cap:Hall.S.cap, mode:G.mode }; },
+  startExam(){ startExam(); }, finishExam(){ finishExam(); },
+  examStep(dt){ G.total+=dt; updateExam(dt); updateCamera(dt); },
+  examKey(n){ edges['Digit'+n] = (edges['Digit'+n]||0)+1; },
+  examInfo(){ const S=ExamScene.S; return { t:+S.t.toFixed(1), stage:S.stage, q:S.qi,
+    answered:S.answered, aura:Math.round(S.aura), gold:S.goldHits, nags:S.nags,
+    breaches:S.breaches, gone:S.finished, walkers:S.walkers.length,
+    right:S.right, total:examTotal(S), order:S.order,
+    panic:+S.panic.toFixed(2), cap:S.cap, done:S.done }; },
   Lunch, LUN, LUNCH_Y, LUNCH_EXITS, MENU, startLunch(){ startLunch(); }, DOOR_BACK, DOOR_HW,
   SCHOOL_ROUTES, pickSchoolRoute, startRound(){ startRound(); }, queueSlot, distToQueue, lunchDistToQueue, lunchQueueSlot,
   bayAnchored, lunchAnchored,
