@@ -548,7 +548,7 @@
       <div class="dqOpts" id="dqOpts"></div>
       <div class="dqMark" id="dqMark"></div>
     </div>
-    <div class="detFoot" id="detFoot">Answer all four. Then you can go.</div>
+    <div class="detFoot" id="detFoot">Four correct answers and you can go.</div>
   </div>
 </div>
 <div id="lunchStock" class="hidden">
@@ -6056,7 +6056,7 @@ function lunchBar(reason){
 function lunchDetentionStart(){
   fadeTo(()=>{
     Lunch.S.det = 30.0;            // only a backstop; the sheet is what lets you out
-    G.det = { batch: detNextBatch(), i:0, right:0, locked:false, done:false, until:0 };
+    G.det = { queue: detQueue(), right:0, asked:0, lastOk:false, locked:false, done:false, until:0 };
     Lunch.group.visible = false;
     detRoomEnter();
     pressure = 0; camShakeX = camShakeY = 0;
@@ -6926,24 +6926,29 @@ const DET_QS = [
     a:['Yes \u2014 it is fun lol', 'No \u2014 I would rather play westlakeboys.xyz'],
     c:0, why:'Yes. Say it like you mean it.' }
 ];
-const DET_PER_SIT = 4;
+/* Four RIGHT answers, not four answers.  Get one wrong and it goes to the back
+   of the pile — you will see it again, and by then you have been told what the
+   school wants to hear.  That is rather the point of a detention. */
+const DET_TARGET = 4;
 function detShuffle(){
   const o = DET_QS.map((_,i)=>i);
   for (let i=o.length-1;i>0;i--){ const j=rint(0,i); const t=o[i]; o[i]=o[j]; o[j]=t; }
   return o;
 }
-function detNextBatch(){
+function detQueue(){
   if (!G.detOrder || G.detAt >= G.detOrder.length){ G.detOrder = detShuffle(); G.detAt = 0; }
-  const batch = G.detOrder.slice(G.detAt, G.detAt + DET_PER_SIT);
-  G.detAt += batch.length;
-  return batch;
+  // start where the last detention left off, then wrap through the rest
+  const q = G.detOrder.slice(G.detAt).concat(G.detOrder.slice(0, G.detAt));
+  G.detAt += DET_TARGET;
+  return q;
 }
 function detShow(){
   const D = G.det;
-  const Q = DET_QS[D.batch[D.i]];
+  if (!D.queue.length) D.queue = detShuffle();
+  const Q = DET_QS[D.queue[0]];
   $('detSheet').classList.remove('hidden');
-  $('dqNum').textContent = 'Question ' + (D.i+1) + ' of ' + D.batch.length;
-  $('dqScore').textContent = D.right + '/' + D.batch.length;
+  $('dqNum').textContent = DET_TARGET + ' correct to leave';
+  $('dqScore').textContent = D.right + '/' + DET_TARGET;
   $('dqQ').textContent = Q.q;
   $('dqOpts').innerHTML = Q.a.map(function(t,i){
     return '<div class="dqOpt" data-i="'+i+'"><u>'+(i+1)+'</u><span>'+t+'</span></div>'; }).join('');
@@ -6957,8 +6962,8 @@ function detShow(){
 }
 function detAnswer(n){
   const D = G.det;
-  if (!D || D.locked || D.done) return;
-  const Q = DET_QS[D.batch[D.i]];
+  if (!D || D.locked || D.done || !D.queue.length) return;
+  const Q = DET_QS[D.queue[0]];
   if (n < 0 || n >= Q.a.length) return;
   D.locked = true;
   const ok = (n === Q.c);
@@ -6966,11 +6971,13 @@ function detAnswer(n){
   opts[n].classList.add(ok ? 'right' : 'wrong');
   if (!ok && opts[Q.c]) opts[Q.c].classList.add('right');
   const m = $('dqMark');
-  m.textContent = (ok ? 'CORRECT \u2014 ' : 'WRONG \u2014 ') + Q.why;
+  m.textContent = (ok ? 'CORRECT \u2014 ' : 'WRONG \u2014 ') + Q.why
+                + (ok ? '' : ' You will get this one again.');
   m.className = 'dqMark ' + (ok ? 'right' : 'wrong');
   // no aura in here — detention is its own punishment
   if (ok){ D.right++; Audio_.point(); } else Audio_.bump();
-  $('dqScore').textContent = D.right + '/' + D.batch.length;
+  D.lastOk = ok;
+  $('dqScore').textContent = D.right + '/' + DET_TARGET;
   D.until = performance.now() + 1900;
 }
 function detFinishRoom(){
@@ -6981,14 +6988,19 @@ function detStep(){
   const D = G.det;
   if (!D || D.done || !D.until) return;
   if (performance.now() < D.until) return;
-  D.until = 0; D.i++; D.locked = false;
-  if (D.i >= D.batch.length){
+  D.until = 0; D.locked = false;
+  // a right answer retires the question; a wrong one sends it to the back
+  const done = D.queue.shift();
+  if (!D.lastOk) D.queue.push(done);
+  D.asked++;
+  if (D.right >= DET_TARGET){
     D.done = true;
     $('detSheet').classList.add('hidden');
     $('dqMark').textContent = '';
     const f = $('detFoot');
-    if (f) f.textContent = 'Sheet in \u2014 ' + D.right + ' of ' + D.batch.length + ' right. Off you go.';
-    detFinishRoom();                       // four questions done, out you go
+    if (f) f.textContent = 'Four correct \u2014 it took you ' + D.asked
+      + (D.asked === 1 ? ' go' : ' goes') + '. Off you go.';
+    detFinishRoom();                       // four right, out you go
   } else detShow();
 }
 
@@ -7067,7 +7079,7 @@ function sendToDetention(reason){
 function startDetention(){
   fadeTo(()=>{
     G.inDetention = true; G.detention = 30.0;
-    G.det = { batch: detNextBatch(), i:0, right:0, locked:false, done:false, until:0 };
+    G.det = { queue: detQueue(), right:0, asked:0, lastOk:false, locked:false, done:false, until:0 };
     const i = agents.indexOf(player); if (i>=0) agents.splice(i,1);
     detRoomEnter();
     pressure = 0; camShakeX = camShakeY = 0;
@@ -9409,8 +9421,8 @@ function tuiSpec(){
   if (!G.started) return [];
   if (G.det && !G.det.done){
     const D = G.det;
-    if (D.locked) return [];
-    return DET_QS[D.batch[D.i]].a.map(function(_,i){
+    if (D.locked || !D.queue.length) return [];
+    return DET_QS[D.queue[0]].a.map(function(_,i){
       return [String(i+1), 'det'+(i+1), 'big']; });
   }
   if (G.mode === 'finale') return [['COOK','KeyF','big']];
@@ -9514,7 +9526,7 @@ if (__DEV) window.__BBB = { G, camera, buses, agents, scene, renderer, Audio_,
   lbSign, sha256hex, lbSane, lbDevice, lbBest, lbSetBest, lbRead,
   noView(){ return _lbNoView; },
   TOUCH, tuiSpec, updateTouchUI, tuiPress,
-  sendToDetention, startDetention, detAnswer, DET_QS, goToBay,
+  sendToDetention, startDetention, detAnswer, DET_QS, DET_TARGET, goToBay,
   lunchDetentionStart,
   detShow,
   ExamScene, EXAM_Y,
